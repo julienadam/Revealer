@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include=".gitignore" />
     <Content Include="html\dist\reset.css" />
     <Content Include="html\dist\reveal.css" />
     <Content Include="html\dist\theme\beige.css" />
@@ -72,8 +73,6 @@
     <None Include="html\plugin\zoom\zoom.js" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
-  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="FSharp.Formatting" Version="19.1.1" />
