@@ -1,22 +1,49 @@
 ﻿open FSharp.Formatting.Markdown
 open FSharp.Formatting.Common
 open Giraffe.ViewEngine
+open System.Text.RegularExpressions
 
-//let document =
-//    """
+let document =
+    """
+- theme : beige
+- title : Foo !
 
-//# Section 1 - Slide 1
+***
 
-//---
+# Section 1 - Slide 1
 
-//# Section 1 - Slide 2
+---
 
-//***
+# Section 1 - Slide 2
 
-//# Section 2 - Slide 1
-//"""
+***
 
-//let parsed = Markdown.Parse(document)
+# Section 2 - Slide 1
+"""
+
+let parsed = Markdown.Parse(document)
+
+let parseOptionsFromDocument paragraphs =
+    let re = Regex "^\s*(?<name>[a-z]+)\s*:\s*(?<value>.*)$"
+
+    let readOptions (items:MarkdownParagraphs list) =
+        let mutable state = Map.empty
+        items |> Seq.iter (fun item -> 
+            match item with
+            | [ Span ([Literal (str, _)], _) ] -> 
+                let m = re.Match(str)
+                if m.Success then
+                    state <- Map.add (m.Groups.["name"].Value.ToLower().Trim()) (m.Groups.["value"].Value.Trim()) state
+            | _ -> ()
+        )
+        state
+
+    match paragraphs |> Seq.tryHead  with
+    | Some (ListBlock (MarkdownListKind.Unordered, items, _)) -> 
+        readOptions items
+    | _ ->
+        Map.empty
+
 
 //let slides = 
 //    parsed.Paragraphs |> List.choose (fun p -> 
@@ -59,7 +86,11 @@ let renderRevealHtml pageTitle theme content =
         ]
     ]
 
+let options = parseOptionsFromDocument parsed.Paragraphs
+let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
+let theme = options.TryFind("theme") |> Option.defaultValue "black"
+
 System.IO.File.WriteAllBytes("index.html", 
     sectionsAndSlides
-    |> renderRevealHtml "Revealer" "beige" 
+    |> renderRevealHtml pageTitle theme
     |> RenderView.AsBytes.htmlDocument)
