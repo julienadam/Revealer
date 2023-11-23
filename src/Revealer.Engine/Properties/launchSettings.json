@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Revealer.Engine": {
+      "commandName": "Project",
+      "workingDirectory": "html"
+    }
+  }
+}
