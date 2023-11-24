@@ -62,48 +62,25 @@ let parseConfigurationFromDocument paragraphs =
 /// Split sections identified by a *** horizontal rule into groups of slides
 /// The first "section" is reserved for metadata and is skipped
 /// TODO: use a YAML front-matter syntax supported by the parser
-let getSections (paragraphs : MarkdownParagraphs) = seq {
-    let mutable sectionParagraphs = []
-    for p in paragraphs |> Seq.skip 1 do
-        match p with
-        | HorizontalRule ('*', _) ->
-            if sectionParagraphs <> [] then
-                yield sectionParagraphs
-            sectionParagraphs <- []
-        | _ -> 
-            sectionParagraphs <- List.append sectionParagraphs [p]
+let splitSections (paragraphs : MarkdownParagraphs) = 
+    paragraphs 
+    |> splitWhen (function | HorizontalRule ('*', _) -> true | _ -> false)
+    |> List.skip 1
 
-    if sectionParagraphs <> [] then
-        yield sectionParagraphs
-}
+let splitSlides (paragraphs : MarkdownParagraphs) = 
+    paragraphs 
+    |> splitWhen (function | HorizontalRule ('-', _) -> true | _ -> false)
 
-let getSlides (paragraphs : MarkdownParagraphs) = seq {
-    let mutable slideParagraphs = []
-    for p in paragraphs do
-        match p with
-        | HorizontalRule ('-', _) ->
-            if slideParagraphs <> [] then
-                yield slideParagraphs
-            slideParagraphs <- []
-        | _ -> 
-            slideParagraphs <- List.append slideParagraphs [p]
-
-    if slideParagraphs <> [] then
-        yield slideParagraphs
-}
-
-let sections = getSections parsed.Paragraphs |> Seq.toList
+let sections = splitSections parsed.Paragraphs |> Seq.toList
 
 let sectionsAndSlides = 
     sections 
     |> List.map(fun sectionContents -> 
-        getSlides sectionContents
+        splitSlides sectionContents
         |> Seq.toList
         |> List.map (fun slideContents ->
             let doc = FSharp.Formatting.Markdown.MarkdownDocument(slideContents, parsed.DefinedLinks)
-            section [] [
-                rawText (Markdown.ToHtml(doc))
-            ]
+            section [] [ rawText (Markdown.ToHtml(doc)) ]
         )
         |> section []
     )

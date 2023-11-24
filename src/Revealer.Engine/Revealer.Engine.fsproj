@@ -71,6 +71,7 @@
     <None Include="html\plugin\zoom\plugin.js" />
     <None Include="html\plugin\zoom\zoom.esm.js" />
     <None Include="html\plugin\zoom\zoom.js" />
+    <Compile Include="Extensions.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -78,7 +79,5 @@
     <PackageReference Include="FSharp.Formatting" Version="19.1.1" />
     <PackageReference Include="Giraffe.ViewEngine" Version="1.4.0" />
   </ItemGroup>
-
-  <ItemGroup />
 
 </Project>
