@@ -1,5 +1,4 @@
 ﻿open FSharp.Formatting.Markdown
-open FSharp.Formatting.Common
 open Giraffe.ViewEngine
 open System.Text.RegularExpressions
 
@@ -10,19 +9,26 @@ let document =
 
 ***
 
-# Section 1 - Slide 1
+# Section 1
 
 ---
 
-# Section 1 - Slide 2
+## Hey
+
+- [google](http://www.google.fr) is bad for your health
 
 ***
 
-# Section 2 - Slide 1
+## Section 2
 
 ---
 
-# Section 2 - Slide 2
+# Foo
+
+```yaml
+foo: false
+bar: baz
+```
 
 """
 
@@ -65,22 +71,42 @@ let getSections (paragraphs : MarkdownParagraphs) = seq {
                 yield sectionParagraphs
             sectionParagraphs <- []
         | _ -> 
-            sectionParagraphs <- sectionParagraphs |> List.append [ p ]
+            sectionParagraphs <- List.append sectionParagraphs [p]
 
     if sectionParagraphs <> [] then
         yield sectionParagraphs
 }
 
+let getSlides (paragraphs : MarkdownParagraphs) = seq {
+    let mutable slideParagraphs = []
+    for p in paragraphs do
+        match p with
+        | HorizontalRule ('-', _) ->
+            if slideParagraphs <> [] then
+                yield slideParagraphs
+            slideParagraphs <- []
+        | _ -> 
+            slideParagraphs <- List.append slideParagraphs [p]
+
+    if slideParagraphs <> [] then
+        yield slideParagraphs
+}
+
 let sections = getSections parsed.Paragraphs |> Seq.toList
 
-let sectionsAndSlides = sections |> List.map(fun sectionContents -> 
-    let doc = FSharp.Formatting.Markdown.MarkdownDocument(sectionContents, parsed.DefinedLinks)
-    section [ _data "markdown" null ] [ 
-        textarea [ _data "template" null] [
-            str (Markdown.ToMd doc)
-        ]
-    ]
-)
+let sectionsAndSlides = 
+    sections 
+    |> List.map(fun sectionContents -> 
+        getSlides sectionContents
+        |> Seq.toList
+        |> List.map (fun slideContents ->
+            let doc = FSharp.Formatting.Markdown.MarkdownDocument(slideContents, parsed.DefinedLinks)
+            section [] [
+                rawText (Markdown.ToHtml(doc))
+            ]
+        )
+        |> section []
+    )
 
 let renderRevealHtml pageTitle theme content =
     let themeCss = sprintf "dist/theme/%s.css" theme;
