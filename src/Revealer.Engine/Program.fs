@@ -19,11 +19,19 @@ let document =
 ***
 
 # Section 2 - Slide 1
+
+---
+
+# Section 2 - Slide 2
+
 """
 
 let parsed = Markdown.Parse(document)
 
-let parseOptionsFromDocument paragraphs =
+/// Parse metadata from the first slide. Each bullet point in the form "name : value" 
+/// represents a key / value configuration
+/// TODO: use a YAML front-matter syntax supported by the parser
+let parseConfigurationFromDocument paragraphs =
     let re = Regex "^\s*(?<name>[a-z]+)\s*:\s*(?<value>.*)$"
 
     let readOptions (items:MarkdownParagraphs list) =
@@ -45,26 +53,34 @@ let parseOptionsFromDocument paragraphs =
         Map.empty
 
 
-//let slides = 
-//    parsed.Paragraphs |> List.choose (fun p -> 
-//        match p with
-//        | HorizontalRule ('-', _) ->
-//            div [ _class "section" ] [ str "section" ] |> Some
-//        | HorizontalRule ('*', _) ->
-//            div [ _class "slide" ] [ str "slide" ] |> Some
-//        | _ -> None
-//        //| Heading (size = 1; body = [ Literal (text = text) ]) ->
-//        //    // Recognize heading that has a simple content
-//        //    // containing just a literal (no other formatting)
-//        //    header [] [ str text] |> Some
-//        //| 
-//        //| _ -> None
-//    )
+/// Split sections identified by a *** horizontal rule into groups of slides
+/// The first "section" is reserved for metadata and is skipped
+/// TODO: use a YAML front-matter syntax supported by the parser
+let getSections (paragraphs : MarkdownParagraphs) = seq {
+    let mutable sectionParagraphs = []
+    for p in paragraphs |> Seq.skip 1 do
+        match p with
+        | HorizontalRule ('*', _) ->
+            if sectionParagraphs <> [] then
+                yield sectionParagraphs
+            sectionParagraphs <- []
+        | _ -> 
+            sectionParagraphs <- sectionParagraphs |> List.append [ p ]
 
-let sectionsAndSlides = [
-        section [] [ str "Section 1"]
-        section [] [ str "Section 2"]
+    if sectionParagraphs <> [] then
+        yield sectionParagraphs
+}
+
+let sections = getSections parsed.Paragraphs |> Seq.toList
+
+let sectionsAndSlides = sections |> List.map(fun sectionContents -> 
+    let doc = FSharp.Formatting.Markdown.MarkdownDocument(sectionContents, parsed.DefinedLinks)
+    section [ _data "markdown" null ] [ 
+        textarea [ _data "template" null] [
+            str (Markdown.ToMd doc)
+        ]
     ]
+)
 
 let renderRevealHtml pageTitle theme content =
     let themeCss = sprintf "dist/theme/%s.css" theme;
@@ -86,7 +102,7 @@ let renderRevealHtml pageTitle theme content =
         ]
     ]
 
-let options = parseOptionsFromDocument parsed.Paragraphs
+let options = parseConfigurationFromDocument parsed.Paragraphs
 let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
 let theme = options.TryFind("theme") |> Option.defaultValue "black"
 
