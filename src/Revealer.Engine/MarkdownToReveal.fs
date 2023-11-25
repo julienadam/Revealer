@@ -57,8 +57,34 @@ let buildSectionsAndSlides (document:MarkdownDocument) =
 let renderRevealHtml pageTitle theme content =
     let themeCss = sprintf "dist/theme/%s.css" theme;
     let css = ["dist/reset.css"; "dist/reveal.css"; themeCss; "plugin/highlight/monokai.css"]
-    let scriptRefs = ["dist/reveal.js"; "plugin/notes/notes.js"; "plugin/markdown/markdown.js"; "plugin/highlight/highlight.js"]
-    let initScript = "Reveal.initialize({ hash: true, backgroundTransition: 'fade', slideNumber: 'c', plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ] });"
+    let scriptRefs = [
+        "dist/reveal.js"
+        "plugin/notes/notes.js"
+        "plugin/markdown/markdown.js"
+        "plugin/search/search.js"
+        "plugin/math/math.js"
+        "plugin/zoom/zoom.js"
+        "plugin/highlight/highlight.js"
+    ]
+    let initScript = """
+const codeElements = document.getElementsByTagName('code');
+for(var i = 0; i < codeElements.length; i++) {
+    codeElements[i].setAttribute("data-line-numbers", "");
+}
+
+Reveal.initialize({ 
+    hash: true,
+    backgroundTransition: 'fade', 
+    slideNumber: 'c', 
+    plugins: [ 
+        RevealMarkdown, 
+        RevealHighlight, 
+        RevealNotes, 
+        RevealSearch, 
+        RevealMath, 
+        RevealZoom ] 
+});
+"""
 
     html [ _lang "en"] [
         head [] [

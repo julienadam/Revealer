@@ -11,7 +11,7 @@ type CliArguments =
             match s with
             | Input _ -> "Input directory containing the markdow files"
             | Output _ -> "Output directory containing the static HTML files"
-            | Auto_Open _ -> "Automatically open the website or generated index file in a browser"
+            | Auto_Open -> "Automatically open the website or generated index file in a browser"
 
 let parser = ArgumentParser.Create<CliArguments>()
 
@@ -27,7 +27,7 @@ if Directory.Exists(inputFolder) = false then
 
 if Directory.Exists(outputFolder) = false then
     Directory.CreateDirectory(outputFolder) |> ignore
-    
+
 StaticSiteGenerator.generateStaticSite inputFolder outputFolder
 if autoOpen then
     let psi = ProcessStartInfo()
