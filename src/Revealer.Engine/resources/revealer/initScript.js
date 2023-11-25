@@ -25,5 +25,6 @@ Reveal.initialize({
         RevealNotes,
         RevealSearch,
         RevealMath,
-        RevealZoom]
+        RevealZoom,
+        RevealMermaid]
 });

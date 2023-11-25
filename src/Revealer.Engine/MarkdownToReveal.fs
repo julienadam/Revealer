@@ -69,6 +69,7 @@ let renderRevealHtml pageTitle theme highlightTheme content =
         "plugin/math/math.js"
         "plugin/zoom/zoom.js"
         "plugin/highlight/highlight.js"
+        "plugin/mermaid/mermaid.js"
     ]
     
     html [ _lang "en"] [
