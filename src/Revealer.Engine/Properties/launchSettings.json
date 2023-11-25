@@ -2,8 +2,8 @@
   "profiles": {
     "Revealer.Engine": {
       "commandName": "Project",
-      "commandLineArgs": "--input ..\\sample1",
-      "workingDirectory": "html"
+      "commandLineArgs": "--output c:\\temp\\sample1 --auto-open",
+      "workingDirectory": "sample1"
     }
   }
 }

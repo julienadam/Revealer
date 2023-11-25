@@ -5,6 +5,7 @@ open Giraffe.ViewEngine
 open System.IO
 
 open MarkdownToReveal
+open System.IO.Compression
 
 let generateStaticSite inputFolder outputFolder =
 
@@ -28,3 +29,6 @@ let generateStaticSite inputFolder outputFolder =
         let rendered = parseAndRender source
         let filename = Path.Combine(outputFolder, Path.ChangeExtension(Path.GetFileName(markdownFile), ".html"))
         System.IO.File.WriteAllBytes(filename, rendered |> RenderView.AsBytes.htmlDocument)
+
+    printfn "Extracting Reveal JS distribution files"
+    RevealJsFiles.getRevealZip().ExtractToDirectory(outputFolder, true)

@@ -6,75 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="html\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="revealjs.zip" />
     <None Include="sample1\chapter_001.md" />
     <None Include="sample1\index.md" />
     <Content Include="TODO.md" />
-    <None Include=".gitignore" />
-    <Content Include="html\dist\reset.css" />
-    <Content Include="html\dist\reveal.css" />
-    <Content Include="html\dist\theme\beige.css" />
-    <Content Include="html\dist\theme\black-contrast.css" />
-    <Content Include="html\dist\theme\black.css" />
-    <Content Include="html\dist\theme\blood.css" />
-    <Content Include="html\dist\theme\dracula.css" />
-    <Content Include="html\dist\theme\fonts\league-gothic\league-gothic.css" />
-    <Content Include="html\dist\theme\fonts\league-gothic\league-gothic.eot" />
-    <Content Include="html\dist\theme\fonts\league-gothic\league-gothic.ttf" />
-    <Content Include="html\dist\theme\fonts\league-gothic\league-gothic.woff" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro-italic.eot" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro-italic.ttf" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro-italic.woff" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro-regular.eot" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro-regular.ttf" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro-regular.woff" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro-semibold.eot" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro-semibold.ttf" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro-semibold.woff" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro-semibolditalic.eot" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro-semibolditalic.ttf" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro-semibolditalic.woff" />
-    <Content Include="html\dist\theme\fonts\source-sans-pro\source-sans-pro.css" />
-    <Content Include="html\dist\theme\league.css" />
-    <Content Include="html\dist\theme\moon.css" />
-    <Content Include="html\dist\theme\night.css" />
-    <Content Include="html\dist\theme\serif.css" />
-    <Content Include="html\dist\theme\simple.css" />
-    <Content Include="html\dist\theme\sky.css" />
-    <Content Include="html\dist\theme\solarized.css" />
-    <Content Include="html\dist\theme\white-contrast.css" />
-    <Content Include="html\dist\theme\white.css" />
-    <Content Include="html\dist\theme\white_contrast_compact_verbatim_headers.css" />
-    <Content Include="html\plugin\highlight\monokai.css" />
-    <Content Include="html\plugin\highlight\zenburn.css" />
-    <Content Include="html\plugin\notes\speaker-view.html" />
-    <None Include="html\dist\reveal.esm.js" />
-    <None Include="html\dist\reveal.esm.js.map" />
-    <None Include="html\dist\reveal.js" />
-    <None Include="html\dist\reveal.js.map" />
-    <None Include="html\dist\theme\fonts\league-gothic\LICENSE" />
-    <None Include="html\dist\theme\fonts\source-sans-pro\LICENSE" />
-    <None Include="html\plugin\highlight\highlight.esm.js" />
-    <None Include="html\plugin\highlight\highlight.js" />
-    <None Include="html\plugin\highlight\plugin.js" />
-    <None Include="html\plugin\markdown\markdown.esm.js" />
-    <None Include="html\plugin\markdown\markdown.js" />
-    <None Include="html\plugin\markdown\plugin.js" />
-    <None Include="html\plugin\math\katex.js" />
-    <None Include="html\plugin\math\math.esm.js" />
-    <None Include="html\plugin\math\math.js" />
-    <None Include="html\plugin\math\mathjax2.js" />
-    <None Include="html\plugin\math\mathjax3.js" />
-    <None Include="html\plugin\math\plugin.js" />
-    <None Include="html\plugin\notes\notes.esm.js" />
-    <None Include="html\plugin\notes\notes.js" />
-    <None Include="html\plugin\notes\plugin.js" />
-    <None Include="html\plugin\search\plugin.js" />
-    <None Include="html\plugin\search\search.esm.js" />
-    <None Include="html\plugin\search\search.js" />
-    <None Include="html\plugin\zoom\plugin.js" />
-    <None Include="html\plugin\zoom\zoom.esm.js" />
-    <None Include="html\plugin\zoom\zoom.js" />
     <Compile Include="Extensions.fs" />
+    <Compile Include="RevealJsFiles.fs" />
     <Compile Include="DeckConfiguration.fs" />
     <Compile Include="MarkdownToReveal.fs" />
     <Compile Include="StaticSiteGenerator.fs" />
@@ -86,6 +27,7 @@
     <PackageReference Include="FSharp.Formatting" Version="19.1.1" />
     <PackageReference Include="Giraffe.ViewEngine" Version="1.4.0" />
     <PackageReference Include="Pastel" Version="4.2.0" />
+    <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

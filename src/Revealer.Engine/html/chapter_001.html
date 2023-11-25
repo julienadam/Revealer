@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="dist/reset.css"><link rel="stylesheet" href="dist/reveal.css"><link rel="stylesheet" href="dist/theme/night.css"><link rel="stylesheet" href="plugin/highlight/monokai.css"><title>Chapter 001</title></head><body><div class="reveal"><div class="slides"><section><section><h1>Some FSharp</h1>
+<pre><code class="language-fs">let x = ["abc"; "def"]
+x 
+|&gt; Seq.filter(fun s -&gt; s.StartsWith("a")) 
+|&gt; Seq.iter (fun s -&gt; printfn "%s" s)
+</code></pre>
+</section><section><h2>Title 1</h2>
+<ul>
+<li>
+<p>blah</p>
+<ul>
+<li>sdlkjfhjdskjlfhlkjs kljh dkljfhs dkjfh</li>
+<li>�o_�_�esq�fxmdxzstr^��)do podqikpomlio</li>
+</ul>
+</li>
+<li>
+<p>Multiline BS</p>
+<pre><code class="language-sql">SELECT TOP 10 * FROM Customer;
+</code></pre>
+</li>
+</ul>
+</section></section></div></div><script src="dist/reveal.js"></script><script src="plugin/notes/notes.js"></script><script src="plugin/markdown/markdown.js"></script><script src="plugin/highlight/highlight.js"></script><script>Reveal.initialize({ hash: true, backgroundTransition: 'fade', slideNumber: 'c', plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ] });</script></body></html>
