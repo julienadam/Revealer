@@ -1,7 +1,6 @@
 ﻿open FSharp.Formatting.Markdown
 open Giraffe.ViewEngine
 open System.Text.RegularExpressions
-open System.IO
 open System
 
 /// Parse metadata from the first slide. Each bullet point in the form "name : value" 
@@ -39,21 +38,23 @@ let splitSlides (paragraphs : MarkdownParagraphs) =
     paragraphs 
     |> splitWhen (function | HorizontalRule ('-', _) -> true | _ -> false)
 
-/// Puts all lines starting with a quote in a single <aside> element
-/// separated by <br/>.
-let produceSingleNoteFromMutilineText (str:string) =
-    // TODO : Loses any line that is not a note if it is in the same paragraph
-    // TODO : should error if that's the case
-    let notes =
-        str.Split([|"\r\n"; "\n"|], StringSplitOptions.RemoveEmptyEntries)
-        |> Array.filter (fun s -> s.StartsWith("'"))
-        |> Array.map (fun s -> s.Substring(1))
-    
-    let notesParagraph = String.Join("<br/>", notes)
-    let html = sprintf "<aside class=\"notes\">%s</aside><br/>" (notesParagraph)
-    MarkdownParagraph.InlineHtmlBlock(html, None, None)
-
+/// Replaces paragraphs with literals starting with "'" with the relevant markup
+/// for notes (i.e <aside> tags with lines separated by <br/>)
 let processSpeakerNotes (paragraphs:MarkdownParagraphs) = 
+    /// Puts all lines starting with a quote in a single inline HTML block
+    /// containing an <aside> element with each line separated by <br/>.
+    let produceSingleNoteFromMutilineText (str:string) =
+        // TODO : Loses any line that is not a note if it is in the same paragraph
+        // TODO : should error if that's the case
+        let notes =
+            str.Split([|"\r\n"; "\n"|], StringSplitOptions.RemoveEmptyEntries)
+            |> Array.filter (fun s -> s.StartsWith("'"))
+            |> Array.map (fun s -> s.Substring(1))
+        
+        let notesParagraph = String.Join("<br/>", notes)
+        let html = sprintf "<aside class=\"notes\">%s</aside><br/>" (notesParagraph)
+        MarkdownParagraph.InlineHtmlBlock(html, None, None)
+    
     paragraphs 
     |> List.map (fun p ->
         match p with 
