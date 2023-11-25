@@ -52,9 +52,10 @@ let buildSectionsAndSlides (document:MarkdownDocument) =
     ) 
     |> Seq.toList
 
-let renderRevealHtml pageTitle theme content =
+let renderRevealHtml pageTitle theme highlightTheme content =
     let themeCss = sprintf "dist/theme/%s.css" theme;
-    let css = ["dist/reset.css"; "dist/reveal.css"; themeCss; "plugin/highlight/monokai.css"; "custom.css"]
+    let highlightThemeCss = sprintf "plugin/highlight/%s.css" highlightTheme;
+    let css = ["dist/reset.css"; "dist/reveal.css"; themeCss; highlightThemeCss; "custom.css"]
     let scriptRefs = [
         "dist/reveal.js"
         "plugin/notes/notes.js"
@@ -85,9 +86,10 @@ let parseAndRender markdownContents =
     let options = DeckConfiguration.parseConfigurationFromDocument parsed.Paragraphs
     let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
     let theme = options.TryFind("theme") |> Option.defaultValue "black"
+    let highlightTheme = options.TryFind("highlight-theme") |> Option.defaultValue "monokai"
     printfn "\tTheme : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)
     printfn "\tTitle  : %s" (pageTitle |> pastelSys System.ConsoleColor.DarkGreen)
 
     parsed
     |> buildSectionsAndSlides
-    |> renderRevealHtml pageTitle theme
+    |> renderRevealHtml pageTitle theme highlightTheme

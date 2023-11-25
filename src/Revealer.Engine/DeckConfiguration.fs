@@ -7,7 +7,7 @@ open System.Text.RegularExpressions
 /// represents a key / value configuration
 /// TODO: use a YAML front-matter syntax supported by the parser
 let parseConfigurationFromDocument paragraphs =
-    let re = Regex "^\s*(?<name>[a-z]+)\s*:\s*(?<value>.*)$"
+    let re = Regex "^\s*(?<name>[a-z-]+)\s*:\s*(?<value>.*)$"
 
     let readOptions (items:MarkdownParagraphs list) =
         let mutable state = Map.empty

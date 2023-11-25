@@ -1,6 +1,7 @@
 - theme : night
 - title : Chapter 001
 - description : Something or other
+- highlight-theme : zenburn
 
 ***
 

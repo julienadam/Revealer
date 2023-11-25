@@ -1,7 +1,12 @@
 ## Features
 
-- Serve slide deck with internal web server
-- On changes, regenerate and reload
-- Allow custom css
+- Auto reload on markdown changes when hosting in the built-in server
 - Allow YAML front matter instead of bullet list for configuration
 - Configuration should be richer and translate into Reveal configuration
+- Mermaid diagrams
+
+## Bugs
+
+- Fix either or both :
+	- Indented code blocks between list elements don't take their full size, scrollbars appear
+	- Non-indented code block between list items results in the list items being centered ...
