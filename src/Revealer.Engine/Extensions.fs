@@ -3,6 +3,7 @@ module Extensions
 
 open Pastel
 open System.IO
+open System.Diagnostics
 
 let splitWhen condition list = 
     let yieldRevNonEmpty list = 
@@ -27,6 +28,12 @@ let pastelHex (color:string) (str:string) = str.Pastel(color);
 let pastelSys (color:System.ConsoleColor) (str:string) = str.Pastel(color);
 let pastelCol (color:System.Drawing.Color) (str:string) = str.Pastel(color);
 let printError (s:string) = printfn "%s\n" (s.Pastel(System.ConsoleColor.White).PastelBg(System.ConsoleColor.Red))
+
+let openUrlInBrowser url =
+    let psi = ProcessStartInfo()
+    psi.FileName <- url
+    psi.UseShellExecute <- true
+    Process.Start(psi) |> ignore
 
 let copyDir source dest =
     let rec copyRecursive (source:DirectoryInfo) (dest:DirectoryInfo) =

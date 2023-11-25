@@ -20,13 +20,16 @@
     <Compile Include="DeckConfiguration.fs" />
     <Compile Include="MarkdownToReveal.fs" />
     <Compile Include="StaticSiteGenerator.fs" />
+    <Compile Include="WebApp.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Argu" Version="6.1.1" />
     <PackageReference Include="FSharp.Formatting" Version="19.1.1" />
+    <PackageReference Include="Giraffe" Version="6.2.0" />
     <PackageReference Include="Giraffe.ViewEngine" Version="1.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
     <PackageReference Include="Pastel" Version="4.2.0" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
   </ItemGroup>

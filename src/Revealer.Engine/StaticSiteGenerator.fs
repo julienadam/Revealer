@@ -1,6 +1,5 @@
 ﻿module StaticSiteGenerator
 
-open FSharp.Formatting.Markdown
 open Giraffe.ViewEngine
 open System.IO
 
@@ -25,22 +24,7 @@ let copyDir source dest =
             copyRecursive sourceDir destDir
 
 let generateStaticSite inputFolder outputFolder =
-
-    let markdownFiles = Directory.GetFiles(inputFolder, "*.md")
-
-    let parseAndRender markdownContents =
-        let parsed = Markdown.Parse(markdownContents)
-        let options = DeckConfiguration.parseConfigurationFromDocument parsed.Paragraphs
-        let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
-        let theme = options.TryFind("theme") |> Option.defaultValue "black"
-        printfn "\tTheme : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)
-        printfn "\tTitle  : %s" (pageTitle |> pastelSys System.ConsoleColor.DarkGreen)
-
-        parsed
-        |> buildSectionsAndSlides
-        |> renderRevealHtml pageTitle theme
-
-    for markdownFile in markdownFiles do
+    for markdownFile in Directory.GetFiles(inputFolder, "*.md") do
         printfn "Processing markdown file : %s" (markdownFile |> pastelSys System.ConsoleColor.DarkCyan)
         let source = File.ReadAllText(markdownFile)
         let rendered = parseAndRender source

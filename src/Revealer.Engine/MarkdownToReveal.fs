@@ -99,3 +99,15 @@ Reveal.initialize({
             yield script [] [ rawText initScript ]
         ]
     ]
+
+let parseAndRender markdownContents =
+    let parsed = Markdown.Parse(markdownContents)
+    let options = DeckConfiguration.parseConfigurationFromDocument parsed.Paragraphs
+    let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
+    let theme = options.TryFind("theme") |> Option.defaultValue "black"
+    printfn "\tTheme : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)
+    printfn "\tTitle  : %s" (pageTitle |> pastelSys System.ConsoleColor.DarkGreen)
+
+    parsed
+    |> buildSectionsAndSlides
+    |> renderRevealHtml pageTitle theme
