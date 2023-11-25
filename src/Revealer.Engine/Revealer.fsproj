@@ -13,6 +13,7 @@
     <EmbeddedResource Include="revealjs.zip" />
     <None Include="sample1\chapter_001.md" />
     <None Include="sample1\index.md" />
+    <Content Include="sample1\images\fsharp256.png" />
     <Content Include="TODO.md" />
     <Compile Include="Extensions.fs" />
     <Compile Include="RevealJsFiles.fs" />

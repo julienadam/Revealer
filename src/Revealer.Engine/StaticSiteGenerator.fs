@@ -7,6 +7,23 @@ open System.IO
 open MarkdownToReveal
 open System.IO.Compression
 
+let copyDir source dest =
+    let rec copyRecursive (source:DirectoryInfo) (dest:DirectoryInfo) =
+        for f in source.GetFiles() do
+            f.CopyTo(Path.Combine(dest.ToString(), f.Name), true) |> ignore
+
+        for d in source.GetDirectories() do
+            copyRecursive d (dest.CreateSubdirectory(d.Name)) |> ignore
+
+    if Directory.Exists(source) = true then
+        if Directory.Exists(dest) = false then
+            Directory.CreateDirectory(dest) |> ignore
+
+        let sourceDir = DirectoryInfo(source)
+        let destDir = DirectoryInfo(dest)
+        if sourceDir.FullName <> destDir.FullName then
+            copyRecursive sourceDir destDir
+
 let generateStaticSite inputFolder outputFolder =
 
     let markdownFiles = Directory.GetFiles(inputFolder, "*.md")
@@ -32,3 +49,6 @@ let generateStaticSite inputFolder outputFolder =
 
     printfn "Extracting Reveal JS distribution files"
     RevealJsFiles.getRevealZip().ExtractToDirectory(outputFolder, true)
+
+    printfn "Copying non markdown files to output"
+    copyDir inputFolder outputFolder
