@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="sample1\chapter_001.md" />
+    <None Include="sample1\index.md" />
     <Content Include="TODO.md" />
     <None Include=".gitignore" />
     <Content Include="html\dist\reset.css" />
@@ -74,13 +76,16 @@
     <None Include="html\plugin\zoom\zoom.js" />
     <Compile Include="Extensions.fs" />
     <Compile Include="DeckConfiguration.fs" />
-    <Compile Include="Generator.fs" />
+    <Compile Include="MarkdownToReveal.fs" />
+    <Compile Include="StaticSiteGenerator.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Argu" Version="6.1.1" />
     <PackageReference Include="FSharp.Formatting" Version="19.1.1" />
     <PackageReference Include="Giraffe.ViewEngine" Version="1.4.0" />
+    <PackageReference Include="Pastel" Version="4.2.0" />
   </ItemGroup>
 
 </Project>

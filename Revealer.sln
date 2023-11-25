@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F4096CC9-A734-49F6-BECD-351336EBBB53}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Revealer.Engine", "src\Revealer.Engine\Revealer.Engine.fsproj", "{1E7DF316-C4E5-44AC-AD47-82601B00E178}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Revealer", "src\Revealer.Engine\Revealer.fsproj", "{1E7DF316-C4E5-44AC-AD47-82601B00E178}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C0E44B29-C2AA-42BE-9516-77AB12B28887}"
 	ProjectSection(SolutionItems) = preProject

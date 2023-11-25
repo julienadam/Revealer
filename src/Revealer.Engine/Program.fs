@@ -1,46 +1,29 @@
-﻿open FSharp.Formatting.Markdown
-open Generator
-open Giraffe.ViewEngine
+﻿open Argu
+open System.IO
 
-let document =
-    """
-- theme : beige
-- title : Foo !
+type CliArguments =
+    | Output of path:string
+    | Input of path:string
+    interface IArgParserTemplate with
+        member s.Usage =
+            match s with
+            | Input _ -> "input directory containing the markdow files"
+            | Output _ -> "output directory containing the static HTML files"
 
-***
+let parser = ArgumentParser.Create<CliArguments>()
 
-# Section 1
-' trying out notes
-' on multiple lines
+let result = parser.ParseCommandLine()
+let inputFolder = result.GetResult(Input, defaultValue = System.Environment.CurrentDirectory)
+let outputFolder = result.GetResult(Output, defaultValue = System.Environment.CurrentDirectory)
 
----
+if Directory.Exists(inputFolder) = false then
+    sprintf "Input directory %s does not exist" inputFolder |> printError
+    parser.PrintUsage() |> ignore
+    System.Environment.Exit(-1)
 
-## Hey
+if Directory.Exists(outputFolder) = false then
+    sprintf "Output directory %s does not exist" outputFolder |> printError
+    parser.PrintUsage() |> ignore
+    System.Environment.Exit(-2)
 
-- [google](http://www.google.fr) is bad for your health
-
-***
-
-## Section 2
-
----
-
-# Foo
-
-```yaml
-foo: false
-bar: baz
-```
-
-"""
-
-let parsed = Markdown.Parse(document)
-let options = DeckConfiguration.parseConfigurationFromDocument parsed.Paragraphs
-let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
-let theme = options.TryFind("theme") |> Option.defaultValue "black"
-
-System.IO.File.WriteAllBytes("index.html", 
-    parsed
-    |> buildSectionsAndSlides
-    |> renderRevealHtml pageTitle theme
-    |> RenderView.AsBytes.htmlDocument)
+StaticSiteGenerator.generateStaticSite inputFolder outputFolder

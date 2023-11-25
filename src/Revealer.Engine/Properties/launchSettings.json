@@ -2,6 +2,7 @@
   "profiles": {
     "Revealer.Engine": {
       "commandName": "Project",
+      "commandLineArgs": "--input ..\\sample1",
       "workingDirectory": "html"
     }
   }

@@ -1,4 +1,4 @@
-﻿module Generator
+﻿module MarkdownToReveal
 
 open FSharp.Formatting.Markdown
 open Giraffe.ViewEngine
