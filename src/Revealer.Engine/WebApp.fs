@@ -12,10 +12,10 @@ open Microsoft.AspNetCore.Http
 let startAsync inputFolder port =
 
     let revealJsHandler (folder:string) (path:string) : HttpHandler =
-        fun (next : HttpFunc) (ctx : HttpContext) ->
+        fun (_ : HttpFunc) (ctx : HttpContext) ->
             task {
                 use revealJsFiles = RevealJsFiles.getRevealZip()
-                let filename = folder + "/" + path
+                let filename = sprintf "%s/%s" folder path
                 use stream = revealJsFiles.GetEntry(filename).Open()
                 if stream = null then
                     ctx.SetStatusCode(404)
@@ -29,8 +29,8 @@ let startAsync inputFolder port =
 
     let router =
         choose [
-            routexp "/dist/(.*)" (fun grp -> revealJsHandler "dist" (grp |> Seq.item 1))
-            routexp "/plugin/(.*)" (fun grp -> revealJsHandler "plugin" (grp |> Seq.item 1))
+            routexp "/dist/(.*)" (fun groups -> revealJsHandler "dist" (groups |> Seq.item 1))
+            routexp "/plugin/(.*)" (fun groups -> revealJsHandler "plugin" (groups |> Seq.item 1))
             routef "/%s.html" (fun filename -> 
                 let mdFile = Path.Combine(inputFolder, sprintf "%s.md" filename)
                 if File.Exists(mdFile) then

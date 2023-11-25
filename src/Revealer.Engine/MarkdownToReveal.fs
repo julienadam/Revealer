@@ -21,8 +21,6 @@ let processSpeakerNotes (paragraphs:MarkdownParagraphs) =
     /// Puts all lines starting with a quote in a single inline HTML block
     /// containing an <aside> element with each line separated by <br/>.
     let produceSingleNoteFromMutilineText (str:string) =
-        // TODO : Loses any line that is not a note if it is in the same paragraph
-        // TODO : should error if that's the case
         let notes =
             str.Split([|"\r\n"; "\n"|], StringSplitOptions.RemoveEmptyEntries)
             |> Array.filter (fun s -> s.StartsWith("'"))
@@ -56,7 +54,7 @@ let buildSectionsAndSlides (document:MarkdownDocument) =
 
 let renderRevealHtml pageTitle theme content =
     let themeCss = sprintf "dist/theme/%s.css" theme;
-    let css = ["dist/reset.css"; "dist/reveal.css"; themeCss; "plugin/highlight/monokai.css"]
+    let css = ["dist/reset.css"; "dist/reveal.css"; themeCss; "plugin/highlight/monokai.css"; "custom.css"]
     let scriptRefs = [
         "dist/reveal.js"
         "plugin/notes/notes.js"
@@ -66,37 +64,19 @@ let renderRevealHtml pageTitle theme content =
         "plugin/zoom/zoom.js"
         "plugin/highlight/highlight.js"
     ]
-    let initScript = """
-const codeElements = document.getElementsByTagName('code');
-for(var i = 0; i < codeElements.length; i++) {
-    codeElements[i].setAttribute("data-line-numbers", "");
-}
-
-Reveal.initialize({ 
-    hash: true,
-    backgroundTransition: 'fade', 
-    slideNumber: 'c', 
-    plugins: [ 
-        RevealMarkdown, 
-        RevealHighlight, 
-        RevealNotes, 
-        RevealSearch, 
-        RevealMath, 
-        RevealZoom ] 
-});
-"""
-
+    
     html [ _lang "en"] [
         head [] [
             yield meta [ _charset "utf-8"]
             yield meta [ _name "viewport"; _content "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"]
+            yield style [] [ rawText Resources.inlineStyles]
             yield! css |> List.map(fun c -> link [ _rel "stylesheet"; _href c])
             yield title [] [ str pageTitle ]
         ]
         body [] [
             yield div [ _class "reveal"] [ div [_class "slides"] content ]
             yield! scriptRefs |> List.map(fun s -> script [ _src s ] [])
-            yield script [] [ rawText initScript ]
+            yield script [] [ rawText Resources.initScript ]
         ]
     ]
 

@@ -1,4 +1,4 @@
-- theme : beige
+ï»¿- theme : night
 - title : Foo !
 
 ***
@@ -52,7 +52,7 @@ bar: baz
 ## Non ascii chars
 
 - sdlkjfhjdskjlfhlkjs kljh dkljfhs dkjfh 
-	- ço_è_çesqèfxmdxzstr^àç)do podqikpomlio
+	- Ã§o_Ã¨_Ã§esqÃ¨fxmdxzstr^Ã Ã§)do podqikpomlio
 
 ---
 
@@ -68,13 +68,13 @@ bar: baz
 
 - Sql example
 
-  ```sql
-  SELECT TOP 10 * FROM Customer;
-  ```
+```sql
+SELECT TOP 10 * FROM Customer;
+```
 
 - Markdown example
   
-  ```md
-  ## Foo
-  - Wow much nesting
-  ```
+```md
+## Foo
+- Wow much nesting
+```

@@ -2,9 +2,9 @@
 
 open Giraffe.ViewEngine
 open System.IO
+open System.IO.Compression
 
 open MarkdownToReveal
-open System.IO.Compression
 
 let copyDir source dest =
     let rec copyRecursive (source:DirectoryInfo) (dest:DirectoryInfo) =
