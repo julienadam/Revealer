@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="TODO.md" />
     <None Include=".gitignore" />
     <Content Include="html\dist\reset.css" />
     <Content Include="html\dist\reveal.css" />
@@ -72,6 +73,8 @@
     <None Include="html\plugin\zoom\zoom.esm.js" />
     <None Include="html\plugin\zoom\zoom.js" />
     <Compile Include="Extensions.fs" />
+    <Compile Include="DeckConfiguration.fs" />
+    <Compile Include="Generator.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
