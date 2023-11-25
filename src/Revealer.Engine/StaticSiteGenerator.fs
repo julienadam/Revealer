@@ -32,7 +32,7 @@ let generateStaticSite inputFolder outputFolder =
         System.IO.File.WriteAllBytes(filename, rendered |> RenderView.AsBytes.htmlDocument)
 
     printfn "Extracting Reveal JS distribution files"
-    RevealJsFiles.getRevealZip().ExtractToDirectory(outputFolder, true)
+    Resources.extractAllResourcesTo(outputFolder)
 
     printfn "Copying non markdown files to output"
     copyDir inputFolder outputFolder

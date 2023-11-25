@@ -6,21 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="html\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="resources\revealer.css" />
-    <EmbeddedResource Include="resources\initScript.js" />
-    <EmbeddedResource Include="revealjs.zip" />
+    <EmbeddedResource Include="resources/**/*">
+      <LogicalName>$([System.String]::new('%(RelativeDir)').Replace('\','/'))%(FileName)%(Extension)</LogicalName>
+    </EmbeddedResource>
     <None Include="sample1\chapter_001.md" />
     <None Include="sample1\index.md" />
     <Content Include="Properties\launchSettings.json" />
     <Content Include="sample1\images\fsharp256.png" />
-    <Content Include="TODO.md" />
+    <None Include="TODO.md" />
     <Compile Include="Resources.fs" />
     <Compile Include="Extensions.fs" />
-    <Compile Include="RevealJsFiles.fs" />
     <Compile Include="DeckConfiguration.fs" />
     <Compile Include="MarkdownToReveal.fs" />
     <Compile Include="StaticSiteGenerator.fs" />

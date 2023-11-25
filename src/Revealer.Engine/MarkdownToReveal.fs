@@ -53,9 +53,14 @@ let buildSectionsAndSlides (document:MarkdownDocument) =
     |> Seq.toList
 
 let renderRevealHtml pageTitle theme highlightTheme content =
-    let themeCss = sprintf "dist/theme/%s.css" theme;
-    let highlightThemeCss = sprintf "plugin/highlight/%s.css" highlightTheme;
-    let css = ["dist/reset.css"; "dist/reveal.css"; themeCss; highlightThemeCss; "custom.css"]
+    let css = [
+        "dist/reset.css"
+        "dist/reveal.css"
+        sprintf "dist/theme/%s.css" theme
+        sprintf "plugin/highlight/%s.css" highlightTheme
+        "revealer/revealer.css"
+        "custom.css"
+    ]
     let scriptRefs = [
         "dist/reveal.js"
         "plugin/notes/notes.js"
@@ -70,7 +75,6 @@ let renderRevealHtml pageTitle theme highlightTheme content =
         head [] [
             yield meta [ _charset "utf-8"]
             yield meta [ _name "viewport"; _content "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"]
-            yield style [] [ rawText Resources.inlineStyles]
             yield! css |> List.map(fun c -> link [ _rel "stylesheet"; _href c])
             yield title [] [ str pageTitle ]
         ]
@@ -87,8 +91,9 @@ let parseAndRender markdownContents =
     let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
     let theme = options.TryFind("theme") |> Option.defaultValue "black"
     let highlightTheme = options.TryFind("highlight-theme") |> Option.defaultValue "monokai"
-    printfn "\tTheme : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)
-    printfn "\tTitle  : %s" (pageTitle |> pastelSys System.ConsoleColor.DarkGreen)
+    printfn "\tTitle           : %s" (pageTitle |> pastelSys System.ConsoleColor.DarkGreen)
+    printfn "\tTheme           : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)
+    printfn "\tHighlight theme : %s" (highlightTheme |> pastelSys System.ConsoleColor.DarkGreen)
 
     parsed
     |> buildSectionsAndSlides
