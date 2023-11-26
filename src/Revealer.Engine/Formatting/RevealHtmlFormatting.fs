@@ -89,7 +89,7 @@ module RevealHtmlFormatting =
                 str.Split([|"\r\n"; "\n"|], StringSplitOptions.RemoveEmptyEntries)
                 |> Array.filter (fun s -> s.StartsWith("'"))
                 |> Array.map (fun s -> s.Substring(1))
-            ctx.Writer.Write(sprintf "<aside class=\"notes\">%s</aside><br/>" (String.Join("<br/>", noteLines)))
+            ctx.Writer.Write(sprintf "<aside class=\"notes\">%s</aside>" (String.Join("<br/>", noteLines)))
         | Literal(str, _) -> 
             ctx.Writer.Write(str)
         | HardLineBreak(_) -> ctx.Writer.Write("<br />" + ctx.Newline)
@@ -210,6 +210,10 @@ module RevealHtmlFormatting =
 
             ctx.Writer.Write("</p>")
         | HorizontalRule _ -> ctx.Writer.Write("<hr />")
+        | CodeBlock(code, _, _fence, "mermaid", _, _) ->
+            ctx.Writer.Write("<div class=\"mermaid\"><pre>");
+            ctx.Writer.Write(code);
+            ctx.Writer.Write("</pre></div>");
         | CodeBlock(code, _, _fence, language, _, _) ->
             if ctx.WrapCodeSnippets then
                 ctx.Writer.Write("<table class=\"pre\"><tr><td>")
