@@ -81,17 +81,7 @@ module RevealHtmlFormatting =
 
         | AnchorLink(id, _) -> ctx.Writer.Write("<a name=\"" + id + "\">&#160;</a>")
         | EmbedSpans(cmd, _) -> formatSpans ctx (cmd.Render())
-        | Literal(str, _) when str.StartsWith("'")->
-            // If a literal line starts with a single quote '
-            // assume these are speaker notes and enclose the lines in 
-            // and aside html tag
-            let noteLines =
-                str.Split([|"\r\n"; "\n"|], StringSplitOptions.RemoveEmptyEntries)
-                |> Array.filter (fun s -> s.StartsWith("'"))
-                |> Array.map (fun s -> s.Substring(1))
-            ctx.Writer.Write(sprintf "<aside class=\"notes\">%s</aside>" (String.Join("<br/>", noteLines)))
-        | Literal(str, _) -> 
-            ctx.Writer.Write(str)
+        | Literal(str, _) -> ctx.Writer.Write(str)
         | HardLineBreak(_) -> ctx.Writer.Write("<br />" + ctx.Newline)
         | IndirectLink(body, _, LookupKey ctx.Links (link, title), _)
         | DirectLink(body, link, title, _) ->
@@ -201,6 +191,22 @@ module RevealHtmlFormatting =
                 formatSpans ctx spans
 
             ctx.Writer.Write("</h" + string<int> n + ">")
+        | Paragraph(Literal(body, _)::rest, _) ->
+            // If a literal line starts with a single quote ' assume these are speaker notes and enclose 
+            // the lines in and aside html tag
+            ctx.Writer.Write("<aside class=\"notes\">")
+            // Could be multiple lines starting with ' so remove the quotes if any
+            body.Split([|"\r\n"; "\n"|], StringSplitOptions.RemoveEmptyEntries)
+            |> Array.map (fun s -> if s.StartsWith("'") then s.Substring(1) else s)
+            |> Array.iteri(fun i s -> 
+                if i > 0 then
+                    ctx.Writer.Write("<br/>")
+                ctx.Writer.Write(s)
+                )
+            // Other spans are rendered in the aside too, allows some formatting
+            for span in rest do
+                formatSpan ctx span
+            ctx.Writer.Write("</aside>")
         | Paragraph(spans, _) ->
             ctx.ParagraphIndent()
             ctx.Writer.Write("<p>")

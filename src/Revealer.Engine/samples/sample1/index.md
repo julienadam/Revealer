@@ -3,16 +3,30 @@
 
 ***
 
-## links
+## Links
 
 - Internal : [First chapter](chapter_001.html)
 - External : [Wikipedia](http://www.wikipedia.org)
 
 ---
 
-## Inline code
+## Basic formatting
 
-- Foo `bar` super `baz`
+- Strong : **example**
+- Italics : _example_
+- Italics alternative : *italics*
+- Inline code : `example`
+- Quote before italics : '_example_ (should be a quote before the example)
+- Italics + strong : **_example_**
+
+---
+
+## Formatting bug test
+
+- Formatting on the first char of a bullet should work
+- _italics_
+- **bold**
+- **_both_** <- bug here
 
 ---
 

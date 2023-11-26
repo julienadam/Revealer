@@ -6,13 +6,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="samples\emphasis_bug\index.md" />
+        <None Include="samples\sample1\chapter_001.md" />
+        <None Include="samples\sample1\index.md" />
+        <Content Include="samples\sample1\images\fsharp256.png" />
         <Content Include="Properties\launchSettings.json" />
         <EmbeddedResource Include="resources/**/*">
             <LogicalName>$([System.String]::new('%(RelativeDir)').Replace('\','/'))%(FileName)%(Extension)</LogicalName>
         </EmbeddedResource>
-        <None Include="sample1\chapter_001.md" />
-        <None Include="sample1\index.md" />
-        <Content Include="sample1\images\fsharp256.png" />
         <Compile Include="Formatting\Collections.fs" />
         <Compile Include="Formatting\RevealHtmlFormatting.fs" />
         <None Include="LICENSE.md" />
