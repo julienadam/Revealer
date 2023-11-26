@@ -191,7 +191,7 @@ module RevealHtmlFormatting =
                 formatSpans ctx spans
 
             ctx.Writer.Write("</h" + string<int> n + ">")
-        | Paragraph(Literal(body, _)::rest, _) ->
+        | Paragraph(Literal(body, _)::rest, _) when body.StartsWith("'") ->
             // If a literal line starts with a single quote ' assume these are speaker notes and enclose 
             // the lines in and aside html tag
             ctx.Writer.Write("<aside class=\"notes\">")
