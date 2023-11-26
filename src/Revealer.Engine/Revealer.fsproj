@@ -33,6 +33,7 @@
         <PackageReference Include="FSharp.Formatting" Version="19.1.1" />
         <PackageReference Include="Giraffe" Version="6.2.0" />
         <PackageReference Include="Giraffe.ViewEngine" Version="1.4.0" />
+        <PackageReference Include="Markdig" Version="0.33.0" />
         <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
         <PackageReference Include="Pastel" Version="4.2.0" />
         <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />

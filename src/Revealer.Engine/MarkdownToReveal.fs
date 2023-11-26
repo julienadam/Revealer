@@ -1,47 +1,9 @@
 ﻿module MarkdownToReveal
 
-open FSharp.Formatting.Markdown
+open Markdig
+open Markdig.Syntax
 open Giraffe.ViewEngine
 open System
-open System.IO
-
-/// Split sections identified by a *** horizontal rule into groups of slides
-/// The first "section" is reserved for metadata and is skipped
-let splitSections (paragraphs : MarkdownParagraphs) = 
-    paragraphs 
-    |> splitWhen (function | HorizontalRule ('*', _) -> true | _ -> false)
-    |> List.skip 1
-
-let splitSlides (paragraphs : MarkdownParagraphs) = 
-    paragraphs 
-    |> splitWhen (function | HorizontalRule ('-', _) -> true | _ -> false)
-
-let toRevealHtml(doc: MarkdownDocument) =
-    let sb = new System.Text.StringBuilder()
-    use wr = new StringWriter(sb)
-
-    Reveal.Formatting.RevealHtmlFormatting.formatAsHtml
-        wr
-        false
-        false
-        doc.DefinedLinks
-        Environment.NewLine
-        doc.Paragraphs
-    sb.ToString()
-
-let buildSectionsAndSlides (document:MarkdownDocument) = 
-    document.Paragraphs
-    |> splitSections
-    |> Seq.map(fun sectionContents -> 
-        splitSlides sectionContents
-        |> Seq.toList
-        |> List.map (fun slideContents ->
-            let doc = MarkdownDocument(slideContents, document.DefinedLinks)
-            section [] [ rawText (toRevealHtml(doc)) ]
-        )
-        |> section []
-    ) 
-    |> Seq.toList
 
 let renderRevealHtml pageTitle theme highlightTheme content =
     let css = [
@@ -77,16 +39,51 @@ let renderRevealHtml pageTitle theme highlightTheme content =
         ]
     ]
 
-let parseAndRender markdownContents =
-    let parsed = Markdown.Parse(markdownContents)
-    let options = DeckConfiguration.parseConfigurationFromDocument parsed.Paragraphs
-    let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
-    let theme = options.TryFind("theme") |> Option.defaultValue "black"
-    let highlightTheme = options.TryFind("highlight-theme") |> Option.defaultValue "monokai"
-    printfn "\tTitle           : %s" (pageTitle |> pastelSys System.ConsoleColor.DarkGreen)
-    printfn "\tTheme           : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)
-    printfn "\tHighlight theme : %s" (highlightTheme |> pastelSys System.ConsoleColor.DarkGreen)
+let splitByThematicBlock (sourceLines:string array) (document:MarkdownDocument) (splitChar:char)= 
+    document.Descendants() 
+    |> Seq.toList
+    |> splitWhen(fun (blk:Block) -> 
+        match blk with 
+        | :? ThematicBreakBlock as brk when brk.ThematicChar = splitChar -> true
+        | _ -> false
+    )
+    |> List.map(fun blocks -> 
+        let startLine = blocks.Head.Line
+        let endLine = (blocks |> List.last).Line
+        let lines = Array.sub sourceLines startLine (endLine - startLine + 1)
+        lines, Markdown.Parse(String.Join(System.Environment.NewLine, lines))
+        )
 
-    parsed
-    |> buildSectionsAndSlides
-    |> renderRevealHtml pageTitle theme highlightTheme
+let buildSectionsAndSlides (sourceLines:string array) (document:MarkdownDocument) = 
+    splitByThematicBlock sourceLines document '*'
+    |> List.map(fun (sectionLines, sectionContents) ->
+        splitByThematicBlock sectionLines sectionContents '-'
+        |> List.map (fun (_, slideDoc) ->
+            section [] [ rawText (slideDoc.ToHtml()) ]
+        )
+        |> section []
+    ) 
+    |> Seq.toList
+
+let parseAndRender (markdownContents:string) =
+    let lines = markdownContents.Split([|"\r\n"; "\n"|], StringSplitOptions.None)
+    let parsed = Markdown.Parse(markdownContents)
+    buildSectionsAndSlides lines parsed
+    |> renderRevealHtml "The title" "black" "monokai"
+
+    // "<html></html>"
+    // for block in parsed do
+        
+
+    //let parsed = Markdown.Parse(markdownContents)
+    //let options = DeckConfiguration.parseConfigurationFromDocument parsed.Paragraphs
+    //let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
+    //let theme = options.TryFind("theme") |> Option.defaultValue "black"
+    //let highlightTheme = options.TryFind("highlight-theme") |> Option.defaultValue "monokai"
+    //printfn "\tTitle           : %s" (pageTitle |> pastelSys System.ConsoleColor.DarkGreen)
+    //printfn "\tTheme           : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)
+    //printfn "\tHighlight theme : %s" (highlightTheme |> pastelSys System.ConsoleColor.DarkGreen)
+
+    //parsed
+    //|> buildSectionsAndSlides
+    //|> renderRevealHtml pageTitle theme highlightTheme
