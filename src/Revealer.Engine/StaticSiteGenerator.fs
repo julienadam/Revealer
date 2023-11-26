@@ -2,7 +2,6 @@
 
 open Giraffe.ViewEngine
 open System.IO
-open System.IO.Compression
 
 open MarkdownToReveal
 

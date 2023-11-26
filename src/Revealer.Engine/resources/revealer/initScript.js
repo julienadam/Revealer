@@ -7,7 +7,10 @@ Reveal.initialize({
         RevealHighlight,
         RevealNotes,
         RevealSearch,
-        RevealMath,
+        RevealMath.KaTeX,
         RevealZoom,
-        RevealMermaid]
+        RevealMermaid],
+    katex: {
+        local: 'lib/katex'
+    }
 });

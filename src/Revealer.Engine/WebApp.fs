@@ -27,7 +27,7 @@ let startAsync inputFolder port =
 
     let router =
         choose [
-            routexp "/(dist|plugin|revealer)/(.*)" (fun groups -> resourceHandler (groups |> Seq.head))
+            routexp "/(dist|plugin|revealer|lib)/(.*)" (fun groups -> resourceHandler (groups |> Seq.head))
             routef "/%s.html" (fun filename -> 
                 let mdFile = Path.Combine(inputFolder, sprintf "%s.md" filename)
                 if File.Exists(mdFile) then
