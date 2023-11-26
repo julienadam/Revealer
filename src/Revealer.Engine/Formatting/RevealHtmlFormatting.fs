@@ -81,7 +81,17 @@ module RevealHtmlFormatting =
 
         | AnchorLink(id, _) -> ctx.Writer.Write("<a name=\"" + id + "\">&#160;</a>")
         | EmbedSpans(cmd, _) -> formatSpans ctx (cmd.Render())
-        | Literal(str, _) -> ctx.Writer.Write(str)
+        | Literal(str, _) when str.StartsWith("'")->
+            // If a literal line starts with a single quote '
+            // assume these are speaker notes and enclose the lines in 
+            // and aside html tag
+            let noteLines =
+                str.Split([|"\r\n"; "\n"|], StringSplitOptions.RemoveEmptyEntries)
+                |> Array.filter (fun s -> s.StartsWith("'"))
+                |> Array.map (fun s -> s.Substring(1))
+            ctx.Writer.Write(sprintf "<aside class=\"notes\">%s</aside><br/>" (String.Join("<br/>", noteLines)))
+        | Literal(str, _) -> 
+            ctx.Writer.Write(str)
         | HardLineBreak(_) -> ctx.Writer.Write("<br />" + ctx.Newline)
         | IndirectLink(body, _, LookupKey ctx.Links (link, title), _)
         | DirectLink(body, link, title, _) ->

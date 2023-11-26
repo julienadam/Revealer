@@ -3,7 +3,6 @@
 open FSharp.Formatting.Markdown
 open Giraffe.ViewEngine
 open System
-open Reveal.Formatting
 open System.IO
 
 /// Split sections identified by a *** horizontal rule into groups of slides
@@ -16,37 +15,6 @@ let splitSections (paragraphs : MarkdownParagraphs) =
 let splitSlides (paragraphs : MarkdownParagraphs) = 
     paragraphs 
     |> splitWhen (function | HorizontalRule ('-', _) -> true | _ -> false)
-
-//let preProcessSpans (spans:MarkdownSpans) =
-//    spans |> List.map (fun span ->
-//        match span with 
-//        | InlineCode (code, range) ->
-//            MarkdownSpan.EmbedSpans
-//    )
-
-let preProcessParagraphs (paragraphs:MarkdownParagraphs) = 
-    /// Replaces paragraphs with literals starting with "'" with the relevant markup
-    /// for notes (i.e <aside> tags with lines separated by <br/>)
-    /// Puts all lines starting with a quote in a single inline HTML block
-    /// containing an <aside> element with each line separated by <br/>.
-    let produceSingleNoteFromMutilineText (str:string) =
-        let notes =
-            str.Split([|"\r\n"; "\n"|], StringSplitOptions.RemoveEmptyEntries)
-            |> Array.filter (fun s -> s.StartsWith("'"))
-            |> Array.map (fun s -> s.Substring(1))
-        
-        let notesParagraph = String.Join("<br/>", notes)
-        let html = sprintf "<aside class=\"notes\">%s</aside><br/>" (notesParagraph)
-        MarkdownParagraph.InlineHtmlBlock(html, None, None)
-
-    paragraphs 
-    |> List.map (fun p ->
-        match p with 
-        | Paragraph ([Literal (s, _)], _) -> produceSingleNoteFromMutilineText s
-        //| CodeBlock ()
-        //| Paragraph (spans, range) -> MarkdownParagraph.Paragraph (preProcessSpans spans, range)
-        | _ -> p
-    )
 
 let toRevealHtml(doc: MarkdownDocument) =
     let sb = new System.Text.StringBuilder()
@@ -68,8 +36,7 @@ let buildSectionsAndSlides (document:MarkdownDocument) =
         splitSlides sectionContents
         |> Seq.toList
         |> List.map (fun slideContents ->
-            let slidesWithNotes = preProcessParagraphs slideContents
-            let doc = MarkdownDocument(slidesWithNotes, document.DefinedLinks)
+            let doc = MarkdownDocument(slideContents, document.DefinedLinks)
             section [] [ rawText (toRevealHtml(doc)) ]
         )
         |> section []
