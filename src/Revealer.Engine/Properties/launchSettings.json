@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "Revealer.Engine": {
-      "commandName": "Project",
-      "commandLineArgs": "--output c:\\temp\\sample1 --auto-open --serve --port 8081",
-      "workingDirectory": "sample1"
-    }
-  }
-}

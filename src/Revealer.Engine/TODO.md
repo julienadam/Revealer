@@ -7,7 +7,7 @@
 ## Bugs
 
 - Remove all CDN downloads, replace with local ones
-	- math plugin, some fonts
+	- themes almost all download some fonts ...
 - Fix either or both :
 	- Indented code blocks between list elements don't take their full size, scrollbars appear
 	- Non-indented code block between list items results in the list items being centered ...

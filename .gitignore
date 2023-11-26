@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+**/Properties/launchSettings.json
+/src/Revealer.Engine/Properties/launchSettings.json
