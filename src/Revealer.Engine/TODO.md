@@ -3,7 +3,7 @@
 - Auto reload on markdown changes when hosting in the built-in server
 - Allow YAML front matter instead of bullet list for configuration
 - Configuration should be richer and translate into Reveal configuration
-- Mermaid diagrams
+- Handle Mermaid diagrams in mermaid code blocks instead of html
 
 ## Bugs
 

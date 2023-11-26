@@ -3,6 +3,8 @@
 open FSharp.Formatting.Markdown
 open Giraffe.ViewEngine
 open System
+open Reveal.Formatting
+open System.IO
 
 /// Split sections identified by a *** horizontal rule into groups of slides
 /// The first "section" is reserved for metadata and is skipped
@@ -15,9 +17,16 @@ let splitSlides (paragraphs : MarkdownParagraphs) =
     paragraphs 
     |> splitWhen (function | HorizontalRule ('-', _) -> true | _ -> false)
 
-/// Replaces paragraphs with literals starting with "'" with the relevant markup
-/// for notes (i.e <aside> tags with lines separated by <br/>)
-let processSpeakerNotes (paragraphs:MarkdownParagraphs) = 
+//let preProcessSpans (spans:MarkdownSpans) =
+//    spans |> List.map (fun span ->
+//        match span with 
+//        | InlineCode (code, range) ->
+//            MarkdownSpan.EmbedSpans
+//    )
+
+let preProcessParagraphs (paragraphs:MarkdownParagraphs) = 
+    /// Replaces paragraphs with literals starting with "'" with the relevant markup
+    /// for notes (i.e <aside> tags with lines separated by <br/>)
     /// Puts all lines starting with a quote in a single inline HTML block
     /// containing an <aside> element with each line separated by <br/>.
     let produceSingleNoteFromMutilineText (str:string) =
@@ -29,13 +38,28 @@ let processSpeakerNotes (paragraphs:MarkdownParagraphs) =
         let notesParagraph = String.Join("<br/>", notes)
         let html = sprintf "<aside class=\"notes\">%s</aside><br/>" (notesParagraph)
         MarkdownParagraph.InlineHtmlBlock(html, None, None)
-    
+
     paragraphs 
     |> List.map (fun p ->
         match p with 
         | Paragraph ([Literal (s, _)], _) -> produceSingleNoteFromMutilineText s
+        //| CodeBlock ()
+        //| Paragraph (spans, range) -> MarkdownParagraph.Paragraph (preProcessSpans spans, range)
         | _ -> p
     )
+
+let toRevealHtml(doc: MarkdownDocument) =
+    let sb = new System.Text.StringBuilder()
+    use wr = new StringWriter(sb)
+
+    Reveal.Formatting.RevealHtmlFormatting.formatAsHtml
+        wr
+        false
+        false
+        doc.DefinedLinks
+        Environment.NewLine
+        doc.Paragraphs
+    sb.ToString()
 
 let buildSectionsAndSlides (document:MarkdownDocument) = 
     document.Paragraphs
@@ -44,9 +68,9 @@ let buildSectionsAndSlides (document:MarkdownDocument) =
         splitSlides sectionContents
         |> Seq.toList
         |> List.map (fun slideContents ->
-            let slidesWithNotes = processSpeakerNotes slideContents
+            let slidesWithNotes = preProcessParagraphs slideContents
             let doc = MarkdownDocument(slidesWithNotes, document.DefinedLinks)
-            section [] [ rawText (Markdown.ToHtml(doc)) ]
+            section [] [ rawText (toRevealHtml(doc)) ]
         )
         |> section []
     ) 

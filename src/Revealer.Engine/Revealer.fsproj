@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Formatting\Collections.fs" />
+    <Compile Include="Formatting\RevealHtmlFormatting.fs" />
     <EmbeddedResource Include="resources/**/*">
       <LogicalName>$([System.String]::new('%(RelativeDir)').Replace('\','/'))%(FileName)%(Extension)</LogicalName>
     </EmbeddedResource>
@@ -13,6 +15,7 @@
     <None Include="sample1\index.md" />
     <Content Include="Properties\launchSettings.json" />
     <Content Include="sample1\images\fsharp256.png" />
+    <None Include="LICENSE.md" />
     <None Include="TODO.md" />
     <Compile Include="Resources.fs" />
     <Compile Include="Extensions.fs" />
