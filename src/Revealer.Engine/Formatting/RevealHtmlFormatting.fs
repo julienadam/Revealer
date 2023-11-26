@@ -129,7 +129,7 @@ module RevealHtmlFormatting =
             formatSpans ctx body
             ctx.Writer.Write("</strong>")
         | InlineCode(body, _) ->
-            ctx.Writer.Write("<code>")
+            ctx.Writer.Write("<code class='code-span'>")
             ctx.Writer.Write(htmlEncode body)
             ctx.Writer.Write("</code>")
         | Emphasis(body, _) ->
@@ -205,10 +205,10 @@ module RevealHtmlFormatting =
                 ctx.Writer.Write("<table class=\"pre\"><tr><td>")
 
             if String.IsNullOrWhiteSpace(language) then
-                ctx.Writer.Write(sprintf "<pre><code>")
+                ctx.Writer.Write(sprintf "<pre><code data-line-numbers>")
             else
                 let langCode = sprintf "language-%s" language
-                ctx.Writer.Write(sprintf "<pre><code class=\"%s\">" langCode)
+                ctx.Writer.Write(sprintf "<pre><code data-line-numbers class=\"%s\">" langCode)
 
             ctx.Writer.Write(htmlEncode code)
             ctx.Writer.Write("</code></pre>")
