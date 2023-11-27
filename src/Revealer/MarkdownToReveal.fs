@@ -14,7 +14,8 @@ Reveal.initialize({
         RevealSearch,
         RevealMath.KaTeX,
         RevealZoom,
-        RevealMermaid],
+        PdfExport,
+        ],
     katex: {
         local: 'lib/katex'
     }
@@ -40,6 +41,7 @@ let renderRevealHtml pageTitle theme highlightTheme content =
         "plugin/zoom/zoom.js"
         "plugin/highlight/highlight.js"
         "plugin/mermaid/mermaid.js"
+        "plugin/pdfexport/pdfexport.js"
     ]
     
     html [ _lang "en"] [
