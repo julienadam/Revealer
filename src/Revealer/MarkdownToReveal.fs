@@ -1,8 +1,6 @@
 ﻿module MarkdownToReveal
 
-open Markdig
 open Giraffe.ViewEngine
-
 
 let initScript = """
 Reveal.initialize({
@@ -64,7 +62,7 @@ let parseSectionsAndSlides source =
         MarkdownSplitter.splitSectionsAndSlides source
         |> Seq.map (fun section -> 
             section 
-            |> Seq.map(fun slide -> Markdown.Parse(slide))
+            |> Seq.map RevealMarkdown.parse
             |> Seq.toList
         )
         |> Seq.toList
@@ -84,7 +82,7 @@ let parseSectionsAndSlides source =
 let renderSectionAndSlides sections =
     sections |> List.map (fun slides ->
         slides |> List.map (fun slide -> 
-            section [] [ rawText (slide |> SlideMarkdownFormatter.markdownToHml) ]
+            section [] [ rawText (slide |> RevealMarkdown.toHtml) ]
         )
         |> section []
     )

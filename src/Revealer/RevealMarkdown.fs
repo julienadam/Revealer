@@ -1,4 +1,4 @@
-﻿module SlideMarkdownFormatter
+﻿module RevealMarkdown
 
 open Markdig
 open Markdig.Syntax
@@ -24,17 +24,19 @@ type ClassOnCodeInlineExtension () =
                 htmlRenderer.ObjectRenderers.Replace<CodeInlineRenderer>(new ClassOnCodeInlineRenderer()) |> ignore
             | _ -> ()
 
-let markdownToHml (document:MarkdownDocument) =
-    let pipeline = 
-        MarkdownPipelineBuilder()
-            .Use(new ClassOnCodeInlineExtension())
-            .UseAutoLinks()
-            .UseDiagrams()
-            .UseEmphasisExtras()
-            .UseGridTables()
-            .UseMathematics()
-            .UsePipeTables()
-            .UseListExtras()
-            .UseYamlFrontMatter()
-            .Build();
-    Markdown.ToHtml(document, pipeline);
+let pipeline = 
+    MarkdownPipelineBuilder()
+        .UsePipeTables()
+        .UseGridTables()
+        .Use(new ClassOnCodeInlineExtension())
+        .UseAutoLinks()
+        .UseDiagrams()
+        .UseMathematics()
+        .UseEmphasisExtras()
+        .UseListExtras()
+        .UseYamlFrontMatter()
+        .Build();
+
+let inline toHtml (document:MarkdownDocument) = Markdown.ToHtml(document, pipeline)
+
+let inline parse contents = Markdown.Parse(contents, pipeline)

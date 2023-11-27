@@ -29,7 +29,7 @@ let splitByThematicBlock (source:string) splitChar =
                 builder <- new StringBuilder();
             else
                 if builder.Length > 0 then
-                    builder.AppendLine() |> ignore
+                    builder.Append("\n") |> ignore
                 builder.Append(lines[i]) |> ignore
         yield builder.ToString()
     }

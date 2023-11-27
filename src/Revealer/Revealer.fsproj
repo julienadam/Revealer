@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="samples\table\index.md" />
         <None Include="samples\em_strong_as_first_literal_bug\index.md" />
         <None Include="samples\emphasis_speaker_bug\index.md" />
         <None Include="samples\sample1\chapter_001.md" />
@@ -19,8 +20,8 @@
         <None Include="TODO.md" />
         <Compile Include="Resources.fs" />
         <Compile Include="Extensions.fs" />
+        <Compile Include="RevealMarkdown.fs" />
         <Compile Include="DeckConfiguration.fs" />
-        <Compile Include="SlideMarkdownFormatter.fs" />
         <Compile Include="MarkdownSplitter.fs" />
         <Compile Include="MarkdownToReveal.fs" />
         <Compile Include="StaticSiteGenerator.fs" />
