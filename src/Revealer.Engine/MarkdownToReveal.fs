@@ -5,6 +5,25 @@ open Markdig.Syntax
 open Giraffe.ViewEngine
 open System
 
+let initScript = """
+Reveal.initialize({
+    hash: true,
+    backgroundTransition: 'fade',
+    slideNumber: 'c',
+    plugins: [
+        RevealMarkdown,
+        RevealHighlight,
+        RevealNotes,
+        RevealSearch,
+        RevealMath.KaTeX,
+        RevealZoom,
+        RevealMermaid],
+    katex: {
+        local: 'lib/katex'
+    }
+});
+"""
+
 let renderRevealHtml pageTitle theme highlightTheme content =
     let css = [
         "dist/reset.css"
@@ -35,7 +54,7 @@ let renderRevealHtml pageTitle theme highlightTheme content =
         body [] [
             yield div [ _class "reveal"] [ div [_class "slides"] content ]
             yield! scriptRefs |> List.map(fun s -> script [ _src s ] [])
-            yield script [] [ rawText Resources.initScript ]
+            yield script [] [ rawText initScript ]
         ]
     ]
 
@@ -47,7 +66,7 @@ let splitByThematicBlock (sourceLines:string array) (document:MarkdownDocument) 
         | :? ThematicBreakBlock as brk when brk.ThematicChar = splitChar -> true
         | _ -> false
     )
-    |> List.map(fun blocks -> 
+    |> Seq.map(fun blocks -> 
         let startLine = blocks.Head.Line
         let endLine = (blocks |> List.last).Line
         let lines = Array.sub sourceLines startLine (endLine - startLine + 1)
@@ -56,12 +75,13 @@ let splitByThematicBlock (sourceLines:string array) (document:MarkdownDocument) 
 
 let buildSectionsAndSlides (sourceLines:string array) (document:MarkdownDocument) skipFirst = 
     splitByThematicBlock sourceLines document '*'
-    |> List.skip (if skipFirst then 1 else 0)
-    |> List.map(fun (sectionLines, sectionContents) ->
+    |> Seq.skip (if skipFirst then 1 else 0)
+    |> Seq.map(fun (sectionLines, sectionContents) ->
         splitByThematicBlock sectionLines sectionContents '-'
-        |> List.map (fun (_, slideDoc) ->
+        |> Seq.map (fun (_, slideDoc) ->
             section [] [ rawText (slideDoc.ToHtml()) ]
         )
+        |> Seq.toList
         |> section []
     ) 
     |> Seq.toList
