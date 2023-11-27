@@ -16,6 +16,8 @@
         <EmbeddedResource Include="resources/**/*">
             <LogicalName>$([System.String]::new('%(RelativeDir)').Replace('\','/'))%(FileName)%(Extension)</LogicalName>
         </EmbeddedResource>
+        <Compile Include="MarkdigExtensions\SpeakerNotesExtension.fs" />
+        <Compile Include="MarkdigExtensions\ClassOnCodeInlineExtension.fs" />
         <None Include="LICENSE.md" />
         <None Include="TODO.md" />
         <Compile Include="Resources.fs" />

@@ -36,15 +36,28 @@
 
 ---
 
-# Speaker notes
+## Speaker notes
 
 - Some content
+- Press `S` to open speaker notes
 
 ' trying out notes
 ' on multiple lines
 'without a space
 and what happens if there is no quote ?
 ' maybe it continues
+
+---
+
+## Speaker notes and quote
+
+- Press `S` to open speaker notes
+
+> Foo
+> Bar
+
+' note1
+' note2
 
 ---
 
