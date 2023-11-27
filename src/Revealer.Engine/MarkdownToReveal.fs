@@ -69,7 +69,7 @@ let splitByThematicBlock (sourceLines:string array) (document:MarkdownDocument) 
     |> Seq.map(fun blocks -> 
         let startLine = blocks.Head.Line
         let endLine = (blocks |> List.last).Line
-        let lines = Array.sub sourceLines startLine (endLine - startLine + 1)
+        let lines = Array.sub sourceLines startLine (endLine + 1 - startLine + 1)
         lines, Markdown.Parse(String.Join(System.Environment.NewLine, lines))
         )
 

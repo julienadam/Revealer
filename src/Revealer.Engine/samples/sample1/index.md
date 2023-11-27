@@ -15,8 +15,8 @@
 - Strong : **example**
 - Italics : _example_
 - Italics alternative : *italics*
-- Inline code : `example`
-- Quote before italics : '_example_ (should be a quote before the example)
+- Inline code : `example` <- bug if the example does not appear in red on white
+- Quote before italics : '_example_ <- bug if the quote before example does not show
 - Italics + strong : **_example_**
 
 ---
@@ -26,7 +26,7 @@
 - Formatting on the first char of a bullet should work
 - _italics_
 - **bold**
-- **_both_** <- bug here
+- **_both_** <- bug here if * appears
 
 ---
 

@@ -7,7 +7,7 @@ open Markdig.Syntax.Inlines
 open Markdig.Renderers.Html
 open Markdig.Renderers.Html.Inlines
 
-type CustomCodeInlineRenderer() =
+type ClassOnCodeInlineRenderer() =
     inherit CodeInlineRenderer()
     override _.Write(renderer : HtmlRenderer, obj : CodeInline) = 
         let attrs = new HtmlAttributes()
@@ -21,7 +21,7 @@ type ClassOnCodeInlineExtension () =
         member _.Setup(_ : MarkdownPipeline, renderer : IMarkdownRenderer) =
             match renderer with 
             | :? HtmlRenderer as htmlRenderer ->
-                htmlRenderer.ObjectRenderers.Replace<CodeInlineRenderer>(new CustomCodeInlineRenderer()) |> ignore
+                htmlRenderer.ObjectRenderers.Replace<CodeInlineRenderer>(new ClassOnCodeInlineRenderer()) |> ignore
             | _ -> ()
 
 let markdownToHml (document:MarkdownDocument) =
