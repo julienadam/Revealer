@@ -21,6 +21,7 @@
         <Compile Include="Extensions.fs" />
         <Compile Include="DeckConfiguration.fs" />
         <Compile Include="SlideMarkdownFormatter.fs" />
+        <Compile Include="MarkdownSplitter.fs" />
         <Compile Include="MarkdownToReveal.fs" />
         <Compile Include="StaticSiteGenerator.fs" />
         <Compile Include="WebApp.fs" />

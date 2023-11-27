@@ -1,9 +1,8 @@
 ﻿module MarkdownToReveal
 
 open Markdig
-open Markdig.Syntax
 open Giraffe.ViewEngine
-open System
+
 
 let initScript = """
 Reveal.initialize({
@@ -23,6 +22,7 @@ Reveal.initialize({
     }
 });
 """
+
 
 let renderRevealHtml pageTitle theme highlightTheme content =
     let css = [
@@ -58,39 +58,40 @@ let renderRevealHtml pageTitle theme highlightTheme content =
         ]
     ]
 
-let splitByThematicBlock (sourceLines:string array) (document:MarkdownDocument) (splitChar:char)= 
-    document.Descendants() 
-    |> Seq.toList
-    |> splitWhen(fun (blk:Block) -> 
-        match blk with 
-        | :? ThematicBreakBlock as brk when brk.ThematicChar = splitChar -> true
-        | _ -> false
-    )
-    |> Seq.map(fun blocks -> 
-        let startLine = blocks.Head.Line
-        let endLine = (blocks |> List.last).Line
-        let lines = Array.sub sourceLines startLine (endLine + 1 - startLine + 1)
-        lines, Markdown.Parse(String.Join(System.Environment.NewLine, lines))
-        )
 
-let buildSectionsAndSlides (sourceLines:string array) (document:MarkdownDocument) skipFirst = 
-    splitByThematicBlock sourceLines document '*'
-    |> Seq.skip (if skipFirst then 1 else 0)
-    |> Seq.map(fun (sectionLines, sectionContents) ->
-        splitByThematicBlock sectionLines sectionContents '-'
-        |> Seq.map (fun (_, slideDoc) ->
-            let html = slideDoc |> SlideMarkdownFormatter.markdownToHml
-            section [] [ rawText html ]
+let parseSectionsAndSlides source = 
+    let documents = 
+        MarkdownSplitter.splitSectionsAndSlides source
+        |> Seq.map (fun section -> 
+            section 
+            |> Seq.map(fun slide -> Markdown.Parse(slide))
+            |> Seq.toList
         )
         |> Seq.toList
-        |> section []
-    ) 
-    |> Seq.toList
 
-let parseAndRender (markdownContents:string) =
-    let lines = markdownContents.Split([|"\r\n"; "\n"|], StringSplitOptions.None)
-    let parsed = Markdown.Parse(markdownContents)
-    let options = DeckConfiguration.parseConfigurationFromDocument(parsed)
+    let options = 
+        if (not documents.IsEmpty) && (not documents.Head.IsEmpty) then
+            let firstSlide = documents.Head.Head
+            DeckConfiguration.parseConfigurationFromDocument(firstSlide)
+        else
+            Map.empty
+
+    match options.IsEmpty with
+    | true -> options, documents
+    | false -> options, documents |> List.skip 1
+
+
+let renderSectionAndSlides sections =
+    sections |> List.map (fun slides ->
+        slides |> List.map (fun slide -> 
+            section [] [ rawText (slide |> SlideMarkdownFormatter.markdownToHml) ]
+        )
+        |> section []
+    )
+
+
+let parseAndRender markdownContents =
+    let (options, sections) = parseSectionsAndSlides markdownContents
     let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
     let theme = options.TryFind("theme") |> Option.defaultValue "black"
     let highlightTheme = options.TryFind("highlight-theme") |> Option.defaultValue "monokai"
@@ -98,5 +99,6 @@ let parseAndRender (markdownContents:string) =
     printfn "\tTheme           : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)
     printfn "\tHighlight theme : %s" (highlightTheme |> pastelSys System.ConsoleColor.DarkGreen)
 
-    buildSectionsAndSlides lines parsed (not options.IsEmpty)
+    sections 
+    |> renderSectionAndSlides
     |> renderRevealHtml pageTitle theme highlightTheme
