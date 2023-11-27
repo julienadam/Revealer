@@ -54,8 +54,9 @@ let splitByThematicBlock (sourceLines:string array) (document:MarkdownDocument) 
         lines, Markdown.Parse(String.Join(System.Environment.NewLine, lines))
         )
 
-let buildSectionsAndSlides (sourceLines:string array) (document:MarkdownDocument) = 
+let buildSectionsAndSlides (sourceLines:string array) (document:MarkdownDocument) skipFirst = 
     splitByThematicBlock sourceLines document '*'
+    |> List.skip (if skipFirst then 1 else 0)
     |> List.map(fun (sectionLines, sectionContents) ->
         splitByThematicBlock sectionLines sectionContents '-'
         |> List.map (fun (_, slideDoc) ->
@@ -68,22 +69,13 @@ let buildSectionsAndSlides (sourceLines:string array) (document:MarkdownDocument
 let parseAndRender (markdownContents:string) =
     let lines = markdownContents.Split([|"\r\n"; "\n"|], StringSplitOptions.None)
     let parsed = Markdown.Parse(markdownContents)
-    buildSectionsAndSlides lines parsed
-    |> renderRevealHtml "The title" "black" "monokai"
+    let options = DeckConfiguration.parseConfigurationFromDocument(parsed)
+    let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
+    let theme = options.TryFind("theme") |> Option.defaultValue "black"
+    let highlightTheme = options.TryFind("highlight-theme") |> Option.defaultValue "monokai"
+    printfn "\tTitle           : %s" (pageTitle |> pastelSys System.ConsoleColor.DarkGreen)
+    printfn "\tTheme           : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)
+    printfn "\tHighlight theme : %s" (highlightTheme |> pastelSys System.ConsoleColor.DarkGreen)
 
-    // "<html></html>"
-    // for block in parsed do
-        
-
-    //let parsed = Markdown.Parse(markdownContents)
-    //let options = DeckConfiguration.parseConfigurationFromDocument parsed.Paragraphs
-    //let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
-    //let theme = options.TryFind("theme") |> Option.defaultValue "black"
-    //let highlightTheme = options.TryFind("highlight-theme") |> Option.defaultValue "monokai"
-    //printfn "\tTitle           : %s" (pageTitle |> pastelSys System.ConsoleColor.DarkGreen)
-    //printfn "\tTheme           : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)
-    //printfn "\tHighlight theme : %s" (highlightTheme |> pastelSys System.ConsoleColor.DarkGreen)
-
-    //parsed
-    //|> buildSectionsAndSlides
-    //|> renderRevealHtml pageTitle theme highlightTheme
+    buildSectionsAndSlides lines parsed (not options.IsEmpty)
+    |> renderRevealHtml pageTitle theme highlightTheme
