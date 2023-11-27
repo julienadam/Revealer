@@ -73,12 +73,19 @@ bar: baz
 ## Table
 
 | Col1 | Column 2   | Wow   |
-| ---  | --------   | ---   |
+|------|------------|-------|
 | 42   | Some value | Nope! |
 
 ---
 
 ## Code blocks in list items
+
+- Markdown example
+
+```md
+## Foo
+- bar inside
+```
 
 - Sql example
 
@@ -86,12 +93,7 @@ bar: baz
 SELECT TOP 10 * FROM Customer;
 ```
 
-- Markdown example
-  
-```md
-## Foo
-- Wow much nesting
-```
+
 
 ***
 

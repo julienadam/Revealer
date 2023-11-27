@@ -79,7 +79,8 @@ let buildSectionsAndSlides (sourceLines:string array) (document:MarkdownDocument
     |> Seq.map(fun (sectionLines, sectionContents) ->
         splitByThematicBlock sectionLines sectionContents '-'
         |> Seq.map (fun (_, slideDoc) ->
-            section [] [ rawText (slideDoc.ToHtml()) ]
+            let html = slideDoc |> SlideMarkdownFormatter.markdownToHml
+            section [] [ rawText html ]
         )
         |> Seq.toList
         |> section []
