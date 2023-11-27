@@ -14,7 +14,7 @@ Reveal.initialize({
         RevealSearch,
         RevealMath.KaTeX,
         RevealZoom,
-        PdfExport,
+        // PdfExport,
         ],
     katex: {
         local: 'lib/katex'
@@ -41,7 +41,7 @@ let renderRevealHtml pageTitle theme highlightTheme content =
         "plugin/zoom/zoom.js"
         "plugin/highlight/highlight.js"
         "plugin/mermaid/mermaid.js"
-        "plugin/pdfexport/pdfexport.js"
+        //"plugin/pdfexport/pdfexport.js"
     ]
     
     html [ _lang "en"] [
@@ -90,10 +90,10 @@ let renderSectionAndSlides sections =
     )
 
 
-let parseAndRender markdownContents =
+let parseAndRender markdownContents forcedTheme =
     let (options, sections) = parseSectionsAndSlides markdownContents
     let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
-    let theme = options.TryFind("theme") |> Option.defaultValue "black"
+    let theme = forcedTheme |> Option.defaultValue (options.TryFind("theme") |> Option.defaultValue "black")
     let highlightTheme = options.TryFind("highlight-theme") |> Option.defaultValue "monokai"
     printfn "\tTitle           : %s" (pageTitle |> pastelSys System.ConsoleColor.DarkGreen)
     printfn "\tTheme           : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)

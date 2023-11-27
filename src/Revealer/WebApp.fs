@@ -25,16 +25,22 @@ let startAsync inputFolder port =
                     None)
             }
 
+    let mdToHtmlHandler filename : HttpHandler =
+        fun (next : HttpFunc) (ctx : HttpContext) ->
+            task {
+                let forcedTheme = ctx.TryGetQueryStringValue("theme")
+                let mdFile = Path.Combine(inputFolder, sprintf "%s.md" filename)
+                let contents = File.ReadAllText(mdFile)
+                if File.Exists(mdFile) then
+                    return! (MarkdownToReveal.parseAndRender contents forcedTheme |> htmlView) next ctx
+                else
+                    return! (RequestErrors.NOT_FOUND (sprintf "No markdown file named %s.md found" filename)) next ctx
+            }
+
     let router =
         choose [
             routexp "/(dist|plugin|revealer|lib)/(.*)" (fun groups -> resourceHandler (groups |> Seq.head))
-            routef "/%s.html" (fun filename -> 
-                let mdFile = Path.Combine(inputFolder, sprintf "%s.md" filename)
-                if File.Exists(mdFile) then
-                    MarkdownToReveal.parseAndRender(File.ReadAllText(mdFile)) |> htmlView
-                else
-                   RequestErrors.NOT_FOUND (sprintf "No markdown file named %s.md found" filename)
-            )
+            routef "/%s.html" mdToHtmlHandler
         ]
 
     let configureApp (app : IApplicationBuilder) =
