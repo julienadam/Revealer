@@ -20,7 +20,7 @@ let startAsync inputFolder port loglevel =
         | _ -> "application/octet-stream"
 
     let tryResourceHandler path : HttpHandler =
-        fun (next : HttpFunc) (ctx : HttpContext) ->
+        fun (_ : HttpFunc) (ctx : HttpContext) ->
             task {
                 use stream = Resources.getResourceStream path
                 if stream <> null then
@@ -32,7 +32,7 @@ let startAsync inputFolder port loglevel =
                         None,
                         None)
                 else
-                    return! (next ctx)
+                    return None
             }
 
     let mdToHtmlHandler filename : HttpHandler =
