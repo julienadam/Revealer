@@ -4,11 +4,13 @@
 - Allow YAML front matter instead of bullet list for configuration
 - Configuration should be richer and translate into Reveal configuration
 - Allow specifying paper size when printing
-- Add ES console format to highlightjs
+- Support highlighting specific lines in a code block
+- Add favicon
 
 ## Bugs
 
-- ASP.NET logs when printing are superflous, get rid of them
+- No mimetype on resource files
+- Some Mermaid diagrams are not rendering, refreshing page seems to bring them back somehow ?
 - Remove all CDN downloads, replace with local ones
 	- themes almost all download some fonts ...
 - Fix either or both :

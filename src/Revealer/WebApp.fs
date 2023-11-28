@@ -9,8 +9,15 @@ open Microsoft.Extensions.Logging
 open Giraffe
 open System.IO
 open Microsoft.AspNetCore.Http
+open Microsoft.AspNetCore.StaticFiles
 
 let startAsync inputFolder port loglevel =
+    let mimeProvider = new FileExtensionContentTypeProvider()
+    
+    let getMimeTypeForFileExtension filePath = 
+        match mimeProvider.TryGetContentType(filePath) with
+        | true, c -> c
+        | _ -> "application/octet-stream"
 
     let resourceHandler (path:string) : HttpHandler =
         fun (_ : HttpFunc) (ctx : HttpContext) ->
@@ -18,6 +25,8 @@ let startAsync inputFolder port loglevel =
                 use stream = Resources.getResourceStream path
                 if stream = null then
                     ctx.SetStatusCode(404)
+
+                ctx.SetContentType(getMimeTypeForFileExtension(path))
 
                 return! ctx.WriteStreamAsync(
                     true,
