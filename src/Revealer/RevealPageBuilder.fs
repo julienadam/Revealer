@@ -98,7 +98,7 @@ let parseAndRender markdownContents forcedTheme forcedHighlightTheme =
         |> Option.defaultValue (options.TryFind("theme") |> Option.defaultValue "black")
     let highlightTheme = 
         forcedHighlightTheme 
-        |> Option.defaultValue (options.TryFind("highlight-theme") |> Option.defaultValue "monokai")
+        |> Option.defaultValue (options.TryFind("highlight-theme") |> Option.defaultValue "base16/edge-dark")
     // Print in a single block to avoid interleaved messages in case of simultaneaous requests (like when printing)
     let message = 
         sprintf "\tTitle           : %s\n\tTheme           : %s\n\tHighlight theme : %s" 
