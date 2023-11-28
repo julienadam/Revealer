@@ -3,3 +3,12 @@
     background-color: white;
     border-radius: 3px;
 }
+
+.reveal {
+    font-size: 36px;
+}
+
+.reveal-print .reveal {
+    /* override font size for printing */
+    font-size: 20px;
+}

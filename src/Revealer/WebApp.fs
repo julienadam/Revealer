@@ -29,10 +29,11 @@ let startAsync inputFolder port =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {
                 let forcedTheme = ctx.TryGetQueryStringValue("theme")
+                let forcedHighlightTheme = ctx.TryGetQueryStringValue("highlight-theme")
                 let mdFile = Path.Combine(inputFolder, sprintf "%s.md" filename)
                 let contents = File.ReadAllText(mdFile)
                 if File.Exists(mdFile) then
-                    return! (MarkdownToReveal.parseAndRender contents forcedTheme |> htmlView) next ctx
+                    return! (RevealPageBuilder.parseAndRender contents forcedTheme forcedHighlightTheme |> htmlView) next ctx
                 else
                     return! (RequestErrors.NOT_FOUND (sprintf "No markdown file named %s.md found" filename)) next ctx
             }

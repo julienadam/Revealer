@@ -3,7 +3,7 @@
 open Giraffe.ViewEngine
 open System.IO
 
-open MarkdownToReveal
+open RevealPageBuilder
 
 let copyDir source dest =
     let rec copyRecursive (source:DirectoryInfo) (dest:DirectoryInfo) =
@@ -22,11 +22,11 @@ let copyDir source dest =
         if sourceDir.FullName <> destDir.FullName then
             copyRecursive sourceDir destDir
 
-let generateStaticSite inputFolder outputFolder =
+let generateStaticSite inputFolder outputFolder theme highlightTheme =
     for markdownFile in Directory.GetFiles(inputFolder, "*.md") do
         printfn "Processing markdown file : %s" (markdownFile |> pastelSys System.ConsoleColor.DarkCyan)
         let source = File.ReadAllText(markdownFile)
-        let rendered = parseAndRender source None
+        let rendered = parseAndRender source theme highlightTheme
         let filename = Path.Combine(outputFolder, Path.ChangeExtension(Path.GetFileName(markdownFile), ".html"))
         System.IO.File.WriteAllBytes(filename, rendered |> RenderView.AsBytes.htmlDocument)
 

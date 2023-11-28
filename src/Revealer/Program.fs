@@ -7,6 +7,8 @@ type CliArguments =
     | Serve
     | Port of port:int
     | Auto_Open
+    | Theme of string
+    | HighLight_Theme of string
     interface IArgParserTemplate with
         member s.Usage =
             match s with
@@ -15,6 +17,8 @@ type CliArguments =
             | Auto_Open -> "Automatically open the website or generated index file in a browser"
             | Serve -> "Opens a web server and serves the HTML generated from the input"
             | Port _ -> "HTTP port on which to open the web server. Defaults to 8083"
+            | Theme _ -> "Reveal.JS theme to use for the slides when exporting to static HTML. Ignored in web app."
+            | HighLight_Theme _ -> "Highlight.JS theme to use for syntax highlighted code blocks when exporting to static HTML. Ignored in web app."
 
 [<EntryPoint>]
 let main _ = 
@@ -37,7 +41,10 @@ let main _ =
             if Directory.Exists(outputFolder) = false then
                 Directory.CreateDirectory(outputFolder) |> ignore
 
-            StaticSiteGenerator.generateStaticSite inputFolder outputFolder
+            let theme = result.TryGetResult(Theme)
+            let highlightTheme = result.TryGetResult(HighLight_Theme)
+
+            StaticSiteGenerator.generateStaticSite inputFolder outputFolder theme highlightTheme
             if autoOpen then
                 Path.Combine(outputFolder, "index.html") |> openUrlInBrowser
         else

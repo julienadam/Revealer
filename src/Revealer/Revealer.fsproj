@@ -25,7 +25,7 @@
         <Compile Include="RevealMarkdown.fs" />
         <Compile Include="DeckConfiguration.fs" />
         <Compile Include="MarkdownSplitter.fs" />
-        <Compile Include="MarkdownToReveal.fs" />
+        <Compile Include="RevealPageBuilder.fs" />
         <Compile Include="StaticSiteGenerator.fs" />
         <Compile Include="WebApp.fs" />
         <Compile Include="Program.fs" />

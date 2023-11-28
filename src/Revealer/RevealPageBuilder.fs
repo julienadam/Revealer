@@ -1,4 +1,4 @@
-﻿module MarkdownToReveal
+﻿module RevealPageBuilder
 
 open Giraffe.ViewEngine
 
@@ -7,6 +7,7 @@ Reveal.initialize({
     hash: true,
     backgroundTransition: 'fade',
     slideNumber: 'c',
+    pdfMaxPagesPerSlide: 1,
     plugins: [
         RevealMarkdown,
         RevealHighlight,
@@ -14,7 +15,7 @@ Reveal.initialize({
         RevealSearch,
         RevealMath.KaTeX,
         RevealZoom,
-        // PdfExport,
+        PdfExport,
         ],
     katex: {
         local: 'lib/katex'
@@ -41,7 +42,7 @@ let renderRevealHtml pageTitle theme highlightTheme content =
         "plugin/zoom/zoom.js"
         "plugin/highlight/highlight.js"
         "plugin/mermaid/mermaid.js"
-        //"plugin/pdfexport/pdfexport.js"
+        "plugin/pdfexport/pdfexport.js"
     ]
     
     html [ _lang "en"] [
@@ -89,12 +90,15 @@ let renderSectionAndSlides sections =
         |> section []
     )
 
-
-let parseAndRender markdownContents forcedTheme =
+let parseAndRender markdownContents forcedTheme forcedHighlightTheme =
     let (options, sections) = parseSectionsAndSlides markdownContents
     let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
-    let theme = forcedTheme |> Option.defaultValue (options.TryFind("theme") |> Option.defaultValue "black")
-    let highlightTheme = options.TryFind("highlight-theme") |> Option.defaultValue "monokai"
+    let theme = 
+        forcedTheme 
+        |> Option.defaultValue (options.TryFind("theme") |> Option.defaultValue "black")
+    let highlightTheme = 
+        forcedHighlightTheme 
+        |> Option.defaultValue (options.TryFind("highlight-theme") |> Option.defaultValue "monokai")
     printfn "\tTitle           : %s" (pageTitle |> pastelSys System.ConsoleColor.DarkGreen)
     printfn "\tTheme           : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)
     printfn "\tHighlight theme : %s" (highlightTheme |> pastelSys System.ConsoleColor.DarkGreen)
