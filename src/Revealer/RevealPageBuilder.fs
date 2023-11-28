@@ -99,9 +99,13 @@ let parseAndRender markdownContents forcedTheme forcedHighlightTheme =
     let highlightTheme = 
         forcedHighlightTheme 
         |> Option.defaultValue (options.TryFind("highlight-theme") |> Option.defaultValue "monokai")
-    printfn "\tTitle           : %s" (pageTitle |> pastelSys System.ConsoleColor.DarkGreen)
-    printfn "\tTheme           : %s" (theme |> pastelSys System.ConsoleColor.DarkGreen)
-    printfn "\tHighlight theme : %s" (highlightTheme |> pastelSys System.ConsoleColor.DarkGreen)
+    // Print in a single block to avoid interleaved messages in case of simultaneaous requests (like when printing)
+    let message = 
+        sprintf "\tTitle           : %s\n\tTheme           : %s\n\tHighlight theme : %s" 
+            (pageTitle |> pastelSys System.ConsoleColor.DarkCyan) 
+            (theme |> pastelSys System.ConsoleColor.DarkCyan) 
+            (highlightTheme |> pastelSys System.ConsoleColor.DarkCyan)
+    printfn "%s" message
 
     sections 
     |> renderSectionAndSlides

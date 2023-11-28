@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -6,10 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="Properties\launchSettings.json" />
         <EmbeddedResource Include="resources/**/*">
             <LogicalName>$([System.String]::new('%(RelativeDir)').Replace('\','/'))%(FileName)%(Extension)</LogicalName>
         </EmbeddedResource>
+        <None Include="Properties\launchSettings.json" />
         <None Include="samples\table\index.md" />
         <None Include="samples\em_strong_as_first_literal_bug\index.md" />
         <None Include="samples\emphasis_speaker_bug\index.md" />
@@ -26,6 +26,7 @@
         <Compile Include="DeckConfiguration.fs" />
         <Compile Include="MarkdownSplitter.fs" />
         <Compile Include="RevealPageBuilder.fs" />
+        <Compile Include="SlidePrinter.fs" />
         <Compile Include="StaticSiteGenerator.fs" />
         <Compile Include="WebApp.fs" />
         <Compile Include="Program.fs" />
@@ -36,8 +37,8 @@
         <PackageReference Include="Giraffe" Version="6.2.0" />
         <PackageReference Include="Giraffe.ViewEngine" Version="1.4.0" />
         <PackageReference Include="Markdig" Version="0.33.0" />
-        <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
         <PackageReference Include="Pastel" Version="4.2.0" />
+        <PackageReference Include="PuppeteerSharp" Version="13.0.1" />
         <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
     </ItemGroup>
 

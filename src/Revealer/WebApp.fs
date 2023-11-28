@@ -5,11 +5,12 @@ open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Logging
 open Giraffe
 open System.IO
 open Microsoft.AspNetCore.Http
 
-let startAsync inputFolder port =
+let startAsync inputFolder port loglevel =
 
     let resourceHandler (path:string) : HttpHandler =
         fun (_ : HttpFunc) (ctx : HttpContext) ->
@@ -57,6 +58,9 @@ let startAsync inputFolder port =
                 webHostBuilder
                     .UseWebRoot(inputFolder) // -> input folder is set as web root
                     .Configure(configureApp)
+                    .ConfigureLogging(fun builder ->
+                        builder.SetMinimumLevel loglevel |> ignore // --> Set logLevel
+                    )
                     .ConfigureServices(configureServices)
                     .UseUrls(sprintf "http://0.0.0.0:%i" port) // -> Server listens to localhost on specified port
                     |> ignore)
