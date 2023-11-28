@@ -51,6 +51,10 @@ let renderRevealHtml pageTitle theme highlightTheme content =
             yield meta [ _name "viewport"; _content "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"]
             yield! css |> List.map(fun c -> link [ _rel "stylesheet"; _href c])
             yield title [] [ str pageTitle ]
+            yield link [_rel "apple-touch-icon"; _sizes "180x180"; _href "/apple-touch-icon.png"]
+            yield link [_rel "icon"; _type "image/png"; _sizes "32x32"; _href "/favicon-32x32.png"]
+            yield link [_rel "icon"; _type "image/png"; _sizes "16x16"; _href "/favicon-16x16.png"]
+            yield link [_rel "manifest"; _href "/site.webmanifest"]
         ]
         body [] [
             yield div [ _class "reveal"] [ div [_class "slides"] content ]

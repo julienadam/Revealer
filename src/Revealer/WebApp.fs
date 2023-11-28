@@ -19,20 +19,20 @@ let startAsync inputFolder port loglevel =
         | true, c -> c
         | _ -> "application/octet-stream"
 
-    let resourceHandler (path:string) : HttpHandler =
-        fun (_ : HttpFunc) (ctx : HttpContext) ->
+    let tryResourceHandler path : HttpHandler =
+        fun (next : HttpFunc) (ctx : HttpContext) ->
             task {
                 use stream = Resources.getResourceStream path
-                if stream = null then
-                    ctx.SetStatusCode(404)
+                if stream <> null then
+                    ctx.SetContentType(getMimeTypeForFileExtension(path))
 
-                ctx.SetContentType(getMimeTypeForFileExtension(path))
-
-                return! ctx.WriteStreamAsync(
-                    true,
-                    stream,
-                    None,
-                    None)
+                    return! ctx.WriteStreamAsync(
+                        true,
+                        stream,
+                        None,
+                        None)
+                else
+                    return! (next ctx)
             }
 
     let mdToHtmlHandler filename : HttpHandler =
@@ -50,8 +50,8 @@ let startAsync inputFolder port loglevel =
 
     let router =
         choose [
-            routexp "/(dist|plugin|revealer|lib)/(.*)" (fun groups -> resourceHandler (groups |> Seq.head))
             routef "/%s.html" mdToHtmlHandler
+            routexp "/.*" (fun groups -> tryResourceHandler (groups |> Seq.head))
         ]
 
     let configureApp (app : IApplicationBuilder) =

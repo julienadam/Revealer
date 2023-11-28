@@ -9,7 +9,6 @@
 
 ## Bugs
 
-- No mimetype on resource files
 - Some Mermaid diagrams are not rendering, refreshing page seems to bring them back somehow ?
 - Remove all CDN downloads, replace with local ones
 	- themes almost all download some fonts ...
