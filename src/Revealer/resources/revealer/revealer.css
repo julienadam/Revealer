@@ -5,10 +5,11 @@
 }
 
 .reveal {
+    /* override font size globally, slightly smaller than most themes */
     font-size: 36px;
 }
 
 .reveal-print .reveal {
-    /* override font size for printing */
+    /* override font size for printing to avoid overflow issues */
     font-size: 20px;
 }

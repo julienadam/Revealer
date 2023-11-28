@@ -484,4 +484,3 @@ $RECYCLE.BIN/
 *.swp
 
 **/Properties/launchSettings.json
-/src/Revealer.Engine/Properties/launchSettings.json
