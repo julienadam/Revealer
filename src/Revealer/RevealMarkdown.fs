@@ -8,10 +8,11 @@ let pipeline =
     MarkdownPipelineBuilder()
         .UsePipeTables()
         .UseGridTables()
+        .UseDiagrams() // must be before LineNumbersCodeBlockExtension
         .Use(new ClassOnCodeInlineExtension())
         .Use(new SpeakerNotesExtension())
+        .Use(new LineNumbersCodeBlockExtension())
         .UseAutoLinks()
-        .UseDiagrams()
         .UseMathematics()
         .UseEmphasisExtras()
         .UseListExtras()

@@ -18,6 +18,7 @@
         <None Include="samples\sample1\chapter_001.md" />
         <None Include="samples\sample1\index.md" />
         <Content Include="samples\sample1\images\fsharp256.png" />
+        <Compile Include="MarkdigExtensions\LineNumbersCodeBlockExtension.fs" />
         <Compile Include="MarkdigExtensions\SpeakerNotesExtension.fs" />
         <Compile Include="MarkdigExtensions\ClassOnCodeInlineExtension.fs" />
         <None Include="LICENSE.md" />
