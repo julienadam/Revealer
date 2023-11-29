@@ -10,7 +10,8 @@ let ensureBrowser () = task {
     return! browserFetcher.DownloadAsync()
 }
 
-let getPrintingOptions () = 
+let getPrintingOptions header footer = 
+    let inline styleHeaderAndFooter text = sprintf "<span style=\"font-size: 12px; padding-left: 5px \">%s</span>" text
     let options = new PdfOptions()
     options.Landscape <- true
     let marginOptions = new Media.MarginOptions()
@@ -22,9 +23,16 @@ let getPrintingOptions () =
     options.Format <- Media.PaperFormat.A4
     options.PrintBackground <- true
     options.Tagged <- true
+    match header, footer with
+    | None, None -> ()
+    | _ -> 
+        options.DisplayHeaderFooter <- true
+        options.HeaderTemplate <- styleHeaderAndFooter (header |> Option.defaultValue "")
+        options.FooterTemplate <- styleHeaderAndFooter (footer |> Option.defaultValue "")
+        ()
     options
 
-let generateSinglePdf url outputFile = task {
+let generateSinglePdf url outputFile header footer = task {
     use! browser = Puppeteer.LaunchAsync(new LaunchOptions(Headless = true))
     use! page = browser.NewPageAsync()
     // In case of fonts being loaded from a CDN, use WaitUntilNavigation.Networkidle0 as a second param.
@@ -35,10 +43,10 @@ let generateSinglePdf url outputFile = task {
     // Wait for 3 seconds for the whole page to load. Not very precise but I can't find a way to know when
     // everything is finished redering at the moment
     let! _ = Task.Delay(TimeSpan.FromSeconds(3))
-    return! page.PdfAsync(outputFile, getPrintingOptions ())
+    return! page.PdfAsync(outputFile, getPrintingOptions header footer)
 }
 
-let generateAllPdfs inputFolder outputFolder theme highlightTheme port = task {
+let generateAllPdfs inputFolder outputFolder theme highlightTheme port header footer = task {
     let! _ = ensureBrowser ()
 
     let tasks = 
@@ -47,7 +55,7 @@ let generateAllPdfs inputFolder outputFolder theme highlightTheme port = task {
             printfn "Processing markdown file : %s" (markdownFile |> pastelSys System.ConsoleColor.DarkCyan)
             let path = Path.GetFileNameWithoutExtension(markdownFile);
             let url = sprintf "http://localhost:%i/%s.html?theme=%s&highlight-theme=%s&print-pdf" port path theme highlightTheme
-            generateSinglePdf url (Path.Combine(outputFolder, sprintf "%s.pdf" path))
+            generateSinglePdf url (Path.Combine(outputFolder, sprintf "%s.pdf" path)) header footer
         )
         |> Array.map (fun t -> t :> Task)
     

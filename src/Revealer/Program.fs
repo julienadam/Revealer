@@ -12,6 +12,8 @@ type CliArguments =
     | Theme of string
     | HighLight_Theme of string
     | Log_level of LogLevel
+    | Print_Header of string
+    | Print_Footer of string
     interface IArgParserTemplate with
         member s.Usage =
             match s with
@@ -23,8 +25,10 @@ type CliArguments =
             | Theme _ -> "Reveal.JS theme to use for the slides when exporting to static HTML or printing. Ignored in web app."
             | HighLight_Theme _ -> "Highlight.JS theme to use for syntax highlighted code blocks when exporting to static HTML or printing. Ignored in web app."
             | Print -> "Prints all slide decks to PDF files. Only work in combination with --serve. Files are written to the output folder."
+            | Print_Header _ -> "Header contents when printing"
+            | Print_Footer _ -> "Footer contents when printing"
             | Log_level _ -> "Sets the log level. Defaults to Error."
-
+            
 let ensureDirectoryExists outputFolder = 
     if Directory.Exists(outputFolder) = false then
         Directory.CreateDirectory(outputFolder) |> ignore
@@ -79,14 +83,16 @@ let main _ =
                 let outputFolder = 
                     args.GetResult(Output, defaultValue = System.Environment.CurrentDirectory)
                     |> ensureDirectoryExists
-
+                let header = args.TryGetResult(Print_Header)
+                let footer = args.TryGetResult(Print_Footer)
+                
                 printfn "Starting to print slides"
                 printfn "\tInput           : %s" (inputFolder |> pastelSys System.ConsoleColor.DarkCyan)
                 printfn "\tOutput          : %s" (outputFolder |> pastelSys System.ConsoleColor.DarkCyan)
                 printfn "\tTheme           : %s" (theme |> pastelSys System.ConsoleColor.DarkCyan)
                 printfn "\tHighlight Theme : %s" (highlightTheme |> pastelSys System.ConsoleColor.DarkCyan)
 
-                let generatePdfsTask = SlidePrinter.generateAllPdfs inputFolder outputFolder theme highlightTheme port
+                let generatePdfsTask = SlidePrinter.generateAllPdfs inputFolder outputFolder theme highlightTheme port header footer
                 generatePdfsTask.Wait()
             else
                 if autoOpen then
