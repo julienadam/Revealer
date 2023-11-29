@@ -2,10 +2,15 @@
 
 open System.Text.RegularExpressions
 open Markdig.Syntax
+open Markdig.Extensions.Yaml
+open YamlDotNet.Serialization
+open YamlDotNet.Serialization.NamingConventions
 
+[<CLIMutable>]
 type DeckConfiguration = {
     Theme : string
     HighlightTheme : string
+    Description : string
     Author : string
     Title : string
 }
@@ -13,51 +18,73 @@ type DeckConfiguration = {
 let DefaultConfiguration = { 
     Theme = "night"
     HighlightTheme = "base16/edge-dark"
+    Description = ""
     Author = ""
     Title = ""
 }
 
-let internal extractLiteralsFromListBlock (listBlock:ListBlock) = seq {
-    for listItem in listBlock.Descendants<ListItemBlock>() do
-        match listItem |> Seq.head with
-        | :? ParagraphBlock as p ->
-            match p.Inline.FirstChild with 
-            | :? Inlines.LiteralInline as lit ->
-               yield lit.Content.ToString()
-            | _ -> ()
-        | _ -> ()
-}
+// Parses metadata from a YAML Frontmatter block
+let internal parseFrontMatter (yamlBlock:YamlFrontMatterBlock) =
+    let deserializer = 
+        DeserializerBuilder()
+            .WithNamingConvention(HyphenatedNamingConvention.Instance)
+            .Build()
+    try
+        deserializer.Deserialize<DeckConfiguration>(yamlBlock.Lines.ToString())
+    with
+    | _ -> 
+        printError "Could not parse YAML front matter. Using default configuration"
+        DefaultConfiguration
+
+let internal RegexNameValue = Regex "^\s*(?<name>[a-z-]+)\s*:\s*(?<value>.*)$"
 
 /// Parse metadata from the first slide. Each bullet point in the form "name : value" 
 /// represents a key / value configuration
-/// TODO: use a YAML front-matter syntax supported by the parser
-let parseConfigurationFromDocument (document:MarkdownDocument) =
-    let re = Regex "^\s*(?<name>[a-z-]+)\s*:\s*(?<value>.*)$"
+let internal parseListBlockConfiguration (listBlock:ListBlock) =
+    let extractLiteralsFromListBlock (listBlock:ListBlock) = seq {
+        for listItem in listBlock.Descendants<ListItemBlock>() do
+            match listItem |> Seq.head with
+            | :? ParagraphBlock as p ->
+                match p.Inline.FirstChild with 
+                | :? Inlines.LiteralInline as lit ->
+                   yield lit.Content.ToString()
+                | _ -> ()
+            | _ -> ()
+    }
 
     let extractKeyValue lit = 
-        let m = re.Match(lit)
+        let m = RegexNameValue.Match(lit)
         if m.Success then
             let k = m.Groups.["name"].Value.ToLower().Trim()
             let v = m.Groups.["value"].Value.Trim()
-            Some (k,v)
-        else None
-
+            (k,v)
+        else
+            failwithf "not a valid key value pair"
+    
     let keyValues = 
-        match document |> Seq.head with
-        | :? ListBlock as listBlock when listBlock.IsOrdered = false ->
-            extractLiteralsFromListBlock listBlock
-            |> Seq.choose extractKeyValue
-            |> Map.ofSeq
-        | _ -> 
-            Map.empty
+        extractLiteralsFromListBlock listBlock
+        |> Seq.map extractKeyValue
+        |> Map.ofSeq
 
-    match keyValues.IsEmpty with
-    | true -> None
-    | false -> 
-        { 
-            Theme = keyValues.TryFind "theme" |> Option.defaultValue DefaultConfiguration.Theme
-            HighlightTheme = keyValues.TryFind "highlight-theme" |> Option.defaultValue DefaultConfiguration.HighlightTheme
-            Author = keyValues.TryFind "author" |> Option.defaultValue DefaultConfiguration.Author
-            Title = keyValues.TryFind "title" |> Option.defaultValue DefaultConfiguration.Title
-        } |> Some
+    { 
+        Theme = keyValues.TryFind "theme" |> Option.defaultValue DefaultConfiguration.Theme
+        HighlightTheme = keyValues.TryFind "highlight-theme" |> Option.defaultValue DefaultConfiguration.HighlightTheme
+        Author = keyValues.TryFind "author" |> Option.defaultValue DefaultConfiguration.Author
+        Title = keyValues.TryFind "title" |> Option.defaultValue DefaultConfiguration.Title
+        Description = keyValues.TryFind "description" |> Option.defaultValue DefaultConfiguration.Description
+    }
+    
+let parseConfigurationFromDocument (document:MarkdownDocument) =
+    
+    match document |> Seq.head with
+    | :? YamlFrontMatterBlock as yamlBlock ->
+        parseFrontMatter yamlBlock, false
+    | :? ListBlock as listBlock when listBlock.IsOrdered = false ->
+        try
+            parseListBlockConfiguration listBlock, true
+        with
+        | _ -> 
+            DefaultConfiguration, false
+    | _ -> 
+        DefaultConfiguration, false
 

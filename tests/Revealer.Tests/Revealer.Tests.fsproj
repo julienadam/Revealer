@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="DeckConfigurationTests.fs" />
     <Compile Include="MarkdownSplitterTests.fs" />
   </ItemGroup>
 

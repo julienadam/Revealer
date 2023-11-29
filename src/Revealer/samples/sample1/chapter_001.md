@@ -1,11 +1,12 @@
-- theme : night
-- title : Chapter 001
-- description : Something or other
-- highlight-theme : zenburn
+---
+theme : night
+title : Chapter 001
+author : foo
+description : Something or other
+highlight-theme : zenburn
+---
 
-***
-
-# FSharp code block
+## FSharp code block
 
 ```fs
 let x = ["abc"; "def"]

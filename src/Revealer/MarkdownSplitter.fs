@@ -9,7 +9,7 @@ type Section = string seq
 
 let splitByThematicBlock (source:string) splitChar = 
     let lines = source.Split([|"\r\n"; "\n"|], StringSplitOptions.None)
-    let document = Markdown.Parse(source)
+    let document = RevealMarkdown.parse(source)
     // Put all lines where a thematic block appears in a Set
     let breakLines = 
         document.Descendants() 

@@ -2,7 +2,6 @@
 
 - Config option to auto reload on markdown changes when hosting in the built-in server
 - Allow YAML front matter instead of bullet list for configuration
-- Configuration should be richer and translate into Reveal configuration
 - Allow specifying paper size when printing
 - Support highlighting specific lines in a code block
 

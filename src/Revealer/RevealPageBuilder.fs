@@ -104,16 +104,11 @@ let parseSectionsAndSlides source =
         )
         |> Seq.toList
 
-    let options = 
-        if (not documents.IsEmpty) && (not documents.Head.IsEmpty) then
-            let firstSlide = documents.Head.Head
-            Configuration.parseConfigurationFromDocument(firstSlide)
-        else
-            None
+    let (options, skip) = Configuration.parseConfigurationFromDocument(RevealMarkdown.parse source)
 
-    match options with
-    | None -> Configuration.DefaultConfiguration, documents
-    | Some config -> config, documents |> List.skip 1
+    match skip with
+    | true -> options, documents |> List.skip 1
+    | false -> options, documents
 
 let renderSectionAndSlides sections =
     sections |> List.map (fun slides ->
