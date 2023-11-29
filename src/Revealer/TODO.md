@@ -5,7 +5,6 @@
 - Configuration should be richer and translate into Reveal configuration
 - Allow specifying paper size when printing
 - Support highlighting specific lines in a code block
-- Add favicon
 
 ## Bugs
 

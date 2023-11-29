@@ -13,3 +13,8 @@
     /* override font size for printing to avoid overflow issues */
     font-size: 20px;
 }
+
+.reveal .mermaid {
+    /* force white background for mermaid diagrams */
+    background-color: white
+}

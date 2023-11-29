@@ -141,7 +141,6 @@ root((mindmap))
 ## Gitgraph
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': false }}}%%
 gitGraph
 commit
 commit
@@ -160,7 +159,6 @@ commit
 ## Requirements
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true }}}%%
 requirementDiagram
 
 requirement test_req {
@@ -182,7 +180,6 @@ test_entity - satisfies -> test_req
 ## Chart
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true }}}%%
 pie title Pets adopted by volunteers
 "Dogs" : 386
 "Cats" : 85
@@ -194,7 +191,6 @@ pie title Pets adopted by volunteers
 ## Gantt
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true }}}%%
 gantt
 title A Gantt Diagram
 dateFormat  YYYY-MM-DD
@@ -211,7 +207,6 @@ another task     : 24d
 ## User journey
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true }}}%%
 journey
 title My working day
 section Go to work
@@ -228,7 +223,6 @@ section Go home
 ## ER
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true }}}%%
 erDiagram
 CUSTOMER ||--o{ ORDER : places
 ORDER ||--|{ LINE-ITEM : contains
@@ -240,7 +234,6 @@ CUSTOMER }|..|{ DELIVERY-ADDRESS : uses
 ## State
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true }}}%%
 stateDiagram-v2
 [*] --> Still
 Still --> [*]
@@ -256,7 +249,6 @@ Crash --> [*]
 ## Class
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true }}}%%
 classDiagram
 Animal <|-- Duck
 Animal <|-- Fish
@@ -285,7 +277,6 @@ class Zebra{
 ## Seq
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true }}}%%
 sequenceDiagram
 Alice->>John: Hello John, how are you?
 John-->>Alice: Great!
@@ -296,7 +287,6 @@ Alice-)John: See you later!
 ## Flow
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true }}}%%
 flowchart TD
 A[Start] --> B{Is it?};
 B -- Yes --> C[OK];
