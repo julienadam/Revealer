@@ -13,7 +13,7 @@ open Microsoft.AspNetCore.StaticFiles
 
 let startAsync inputFolder port loglevel =
     let mimeProvider = new FileExtensionContentTypeProvider()
-    
+
     let getMimeTypeForFileExtension filePath = 
         match mimeProvider.TryGetContentType(filePath) with
         | true, c -> c
@@ -26,11 +26,7 @@ let startAsync inputFolder port loglevel =
                 if stream <> null then
                     ctx.SetContentType(getMimeTypeForFileExtension(path))
 
-                    return! ctx.WriteStreamAsync(
-                        true,
-                        stream,
-                        None,
-                        None)
+                    return! ctx.WriteStreamAsync(true, stream, None, None)
                 else
                     return None
             }

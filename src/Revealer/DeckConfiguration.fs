@@ -1,7 +1,21 @@
-﻿module DeckConfiguration
+﻿module Configuration
 
 open System.Text.RegularExpressions
 open Markdig.Syntax
+
+type DeckConfiguration = {
+    Theme : string
+    HighlightTheme : string
+    Author : string
+    Title : string
+}
+
+let DefaultConfiguration = { 
+    Theme = "night"
+    HighlightTheme = "base16/edge-dark"
+    Author = ""
+    Title = ""
+}
 
 let internal extractLiteralsFromListBlock (listBlock:ListBlock) = seq {
     for listItem in listBlock.Descendants<ListItemBlock>() do
@@ -28,10 +42,22 @@ let parseConfigurationFromDocument (document:MarkdownDocument) =
             Some (k,v)
         else None
 
-    match document |> Seq.head with
-    | :? ListBlock as listBlock when listBlock.IsOrdered = false ->
-        extractLiteralsFromListBlock listBlock
-        |> Seq.choose extractKeyValue
-        |> Map.ofSeq
-    | _ -> 
-        Map.empty
+    let keyValues = 
+        match document |> Seq.head with
+        | :? ListBlock as listBlock when listBlock.IsOrdered = false ->
+            extractLiteralsFromListBlock listBlock
+            |> Seq.choose extractKeyValue
+            |> Map.ofSeq
+        | _ -> 
+            Map.empty
+
+    match keyValues.IsEmpty with
+    | true -> None
+    | false -> 
+        { 
+            Theme = keyValues.TryFind "theme" |> Option.defaultValue DefaultConfiguration.Theme
+            HighlightTheme = keyValues.TryFind "highlight-theme" |> Option.defaultValue DefaultConfiguration.HighlightTheme
+            Author = keyValues.TryFind "author" |> Option.defaultValue DefaultConfiguration.Author
+            Title = keyValues.TryFind "title" |> Option.defaultValue DefaultConfiguration.Title
+        } |> Some
+

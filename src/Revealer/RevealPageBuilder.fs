@@ -1,6 +1,8 @@
 ﻿module RevealPageBuilder
 
 open Giraffe.ViewEngine
+open Configuration
+open System
 
 let initScript = """
 Reveal.initialize({
@@ -44,12 +46,12 @@ Reveal.initialize({
 """
 
 
-let renderRevealHtml pageTitle theme highlightTheme content =
+let renderRevealHtml (options:DeckConfiguration) content =
     let css = [
         "dist/reset.css"
         "dist/reveal.css"
-        sprintf "dist/theme/%s.css" theme
-        sprintf "plugin/highlight/%s.css" highlightTheme
+        sprintf "dist/theme/%s.css" options.Theme
+        sprintf "plugin/highlight/%s.css" options.HighlightTheme
         "lib/font-awesome/all.min.css"
         "plugin/customcontrols/style.css"
         "plugin/chalkboard/style.css"
@@ -74,9 +76,11 @@ let renderRevealHtml pageTitle theme highlightTheme content =
     html [ _lang "en"] [
         head [] [
             yield meta [ _charset "utf-8"]
+            if String.IsNullOrEmpty( options.Author) = false then
+                yield meta [ _name "author"; _content options.Author ]
             yield meta [ _name "viewport"; _content "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"]
             yield! css |> List.map(fun c -> link [ _rel "stylesheet"; _href c])
-            yield title [] [ str pageTitle ]
+            yield title [] [ str options.Title ]
             yield link [_rel "apple-touch-icon"; _sizes "180x180"; _href "/apple-touch-icon.png"]
             yield link [_rel "icon"; _type "image/png"; _sizes "32x32"; _href "/favicon-32x32.png"]
             yield link [_rel "icon"; _type "image/png"; _sizes "16x16"; _href "/favicon-16x16.png"]
@@ -103,14 +107,13 @@ let parseSectionsAndSlides source =
     let options = 
         if (not documents.IsEmpty) && (not documents.Head.IsEmpty) then
             let firstSlide = documents.Head.Head
-            DeckConfiguration.parseConfigurationFromDocument(firstSlide)
+            Configuration.parseConfigurationFromDocument(firstSlide)
         else
-            Map.empty
+            None
 
-    match options.IsEmpty with
-    | true -> options, documents
-    | false -> options, documents |> List.skip 1
-
+    match options with
+    | None -> Configuration.DefaultConfiguration, documents
+    | Some config -> config, documents |> List.skip 1
 
 let renderSectionAndSlides sections =
     sections |> List.map (fun slides ->
@@ -120,23 +123,24 @@ let renderSectionAndSlides sections =
         |> section []
     )
 
-let parseAndRender markdownContents forcedTheme forcedHighlightTheme =
-    let (options, sections) = parseSectionsAndSlides markdownContents
-    let pageTitle = options.TryFind("title") |> Option.defaultValue "Revealer"
-    let theme = 
-        forcedTheme 
-        |> Option.defaultValue (options.TryFind("theme") |> Option.defaultValue "black")
-    let highlightTheme = 
-        forcedHighlightTheme 
-        |> Option.defaultValue (options.TryFind("highlight-theme") |> Option.defaultValue "base16/edge-dark")
+let parseAndRender markdownContents (forcedTheme: string option) (forcedHighlightTheme: string option) =
+    let (options, sections) = 
+        let (opts, sections) = parseSectionsAndSlides markdownContents
+        let mutable opts = opts;
+        if forcedTheme.IsSome then
+            opts <- { opts  with Theme = forcedTheme.Value }
+        if forcedHighlightTheme.IsSome then
+            opts <- { opts  with HighlightTheme = forcedHighlightTheme.Value }
+        (opts, sections)
+
     // Print in a single block to avoid interleaved messages in case of simultaneaous requests (like when printing)
     let message = 
         sprintf "\tTitle           : %s\n\tTheme           : %s\n\tHighlight theme : %s" 
-            (pageTitle |> pastelSys System.ConsoleColor.DarkCyan) 
-            (theme |> pastelSys System.ConsoleColor.DarkCyan) 
-            (highlightTheme |> pastelSys System.ConsoleColor.DarkCyan)
+            (options.Title |> pastelSys System.ConsoleColor.DarkCyan) 
+            (options.Theme |> pastelSys System.ConsoleColor.DarkCyan) 
+            (options.HighlightTheme |> pastelSys System.ConsoleColor.DarkCyan)
     printfn "%s" message
 
     sections 
     |> renderSectionAndSlides
-    |> renderRevealHtml pageTitle theme highlightTheme
+    |> renderRevealHtml options
