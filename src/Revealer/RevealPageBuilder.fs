@@ -13,6 +13,21 @@ Reveal.initialize({
     katex: {
         local: 'lib/katex'
     },
+    customcontrols: {
+        controls: [
+          { icon: '<i class="fa fa-chalkboard"></i>',
+            title: 'Toggle chalkboard (B)',
+            action: 'RevealChalkboard.toggleChalkboard();'
+          },
+          { icon: '<i class="fa fa-pen"></i>',
+            title: 'Toggle notes canvas (C)',
+            action: 'RevealChalkboard.toggleNotesCanvas();'
+          }
+        ]
+    },
+    chalkboard: {
+        
+    },
     plugins: [
         RevealMarkdown,
         RevealHighlight,
@@ -21,6 +36,8 @@ Reveal.initialize({
         RevealMath.KaTeX,
         RevealZoom,
         RevealMermaid,
+        RevealCustomControls,
+        RevealChalkboard,
         PdfExport,
         ]
 });
@@ -33,11 +50,15 @@ let renderRevealHtml pageTitle theme highlightTheme content =
         "dist/reveal.css"
         sprintf "dist/theme/%s.css" theme
         sprintf "plugin/highlight/%s.css" highlightTheme
+        "lib/font-awesome/all.min.css"
+        "plugin/customcontrols/style.css"
+        "plugin/chalkboard/style.css"
         "revealer/revealer.css"
         "custom.css"
     ]
     let scriptRefs = [
         "dist/reveal.js"
+        "lib/font-awesome/all.min.js"
         "plugin/notes/notes.js"
         "plugin/markdown/markdown.js"
         "plugin/search/search.js"
@@ -46,6 +67,8 @@ let renderRevealHtml pageTitle theme highlightTheme content =
         "plugin/highlight/highlight.js"
         "plugin/mermaid/mermaid.js"
         "plugin/pdfexport/pdfexport.js"
+        "plugin/customcontrols/plugin.js"
+        "plugin/chalkboard/plugin.js"
     ]
     
     html [ _lang "en"] [
