@@ -8,6 +8,11 @@ Reveal.initialize({
     backgroundTransition: 'fade',
     slideNumber: 'c',
     pdfMaxPagesPerSlide: 1,
+    mermaid: {
+    },
+    katex: {
+        local: 'lib/katex'
+    },
     plugins: [
         RevealMarkdown,
         RevealHighlight,
@@ -15,11 +20,9 @@ Reveal.initialize({
         RevealSearch,
         RevealMath.KaTeX,
         RevealZoom,
+        RevealMermaid,
         PdfExport,
-        ],
-    katex: {
-        local: 'lib/katex'
-    }
+        ]
 });
 """
 
