@@ -17,7 +17,7 @@ type CliArguments =
     interface IArgParserTemplate with
         member s.Usage =
             match s with
-            | Input _ -> "Input directory containing the markdow files. Defaults to current directory"
+            | Input _ -> "Input directory containing the markdown files. Defaults to current directory"
             | Output _ -> "Output directory containing the static HTML files. Creates the directory if not found. Defaults to current directory."
             | Auto_Open -> "Automatically open the website or generated index file in a browser"
             | Serve -> "Opens a web server and serves the HTML generated from the input"
@@ -34,11 +34,7 @@ let ensureDirectoryExists outputFolder =
         Directory.CreateDirectory(outputFolder) |> ignore
     outputFolder
 
-[<EntryPoint>]
-let main _ = 
-    let parser = ArgumentParser.Create<CliArguments>()
-    let args = parser.ParseCommandLine()
-
+let run (args: ParseResults<CliArguments>) (parser: ArgumentParser<CliArguments>) =
     let inputFolder = args.GetResult(Input, defaultValue = System.Environment.CurrentDirectory)
     let isServe = args.Contains(Serve)
 
@@ -101,3 +97,18 @@ let main _ =
                     openUrlInBrowser url
                 appTask.Wait();
         0
+
+[<EntryPoint>]
+let main _ = 
+    let parser: ArgumentParser<CliArguments> = ArgumentParser.Create<CliArguments>()
+    let args: ParseResults<CliArguments> option = 
+        try
+            parser.ParseCommandLine(raiseOnUsage = true) |> Some
+        with
+        | _ -> 
+            None
+    match args with
+    | Some validArgs -> run validArgs parser
+    | None -> 
+        printfn "%s" (parser.PrintUsage())
+        -1

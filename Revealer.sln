@@ -10,11 +10,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C0E44B29-C2AA-42BE-9516-77AB12B28887}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{AA096FAD-A08E-41AC-80A2-FF7B5BF05612}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Revealer.Tests", "tests\Revealer.Tests\Revealer.Tests.fsproj", "{22B674EA-23FC-49DA-ABA3-1BCB60730AA0}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Revealer.Tests", "tests\Revealer.Tests\Revealer.Tests.fsproj", "{22B674EA-23FC-49DA-ABA3-1BCB60730AA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
