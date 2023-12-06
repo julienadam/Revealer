@@ -127,7 +127,7 @@ Options :
 - `--input <DIRECTORY>` : folder where the Markdown files reside, defaults to the current directory
 - `--output <DIRECTORY>` : folder where the static files are written, defaults to the current directory
 - `--theme <THEME>` : Revealjs theme to use, defaults to `night`
-- `--highlight-theme <HL_THEME>` : Highlight.js theme to use for syntax highlighting, defaults to `base16/edge-dark`
+- `--highlight-theme <HL_THEME>` : Highlight.js theme to use for syntax highlighting, defaults to `base16/edge-dark-mod`, a modified dark theme
 - `--auto-open` : opens the default browser on the `index.html` page. Not set by default
 
 ## Print slideshows

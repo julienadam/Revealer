@@ -17,7 +17,7 @@ type DeckConfiguration = {
 
 let DefaultConfiguration = { 
     Theme = "night"
-    HighlightTheme = "base16/edge-dark"
+    HighlightTheme = "base16/edge-dark-mod"
     Description = ""
     Author = ""
     Title = ""
