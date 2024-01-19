@@ -92,7 +92,7 @@ let run (args: ParseResults<CliArguments>) (parser: ArgumentParser<CliArguments>
                 generatePdfsTask.Wait()
             else
                 if autoOpen then
-                    let url = sprintf "http://localhost:%i/index.html" port
+                    let url = sprintf "http://localhost:%i/" port
                     printfn "Auto-opening %s in browser" (url |> pastelSys System.ConsoleColor.DarkCyan)
                     openUrlInBrowser url
                 appTask.Wait();
