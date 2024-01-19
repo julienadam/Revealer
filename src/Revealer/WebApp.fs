@@ -46,7 +46,9 @@ let startAsync inputFolder port loglevel =
 
     let router =
         choose [
+            route "/" >=> (mdToHtmlHandler "index")
             routef "/%s.html" mdToHtmlHandler
+            routef "/%s.md" mdToHtmlHandler
             routexp "/.*" (fun groups -> tryResourceHandler (groups |> Seq.head))
         ]
 

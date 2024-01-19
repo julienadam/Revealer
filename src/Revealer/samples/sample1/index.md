@@ -5,7 +5,8 @@
 
 ## Links
 
-- Internal : [First chapter](chapter_001.html)
+- Internal (html): [First chapter](chapter_001.html)
+- Internal (md): [First chapter](chapter_001.md)
 - External : [Wikipedia](http://www.wikipedia.org)
 
 ---
