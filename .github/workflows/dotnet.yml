@@ -25,10 +25,10 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --logger trx --results-directory "TestResults-${{ dotnet-version }}"
+      run: dotnet test --no-build --logger trx --results-directory "TestResults"
     - name: Upload dotnet test results
       uses: actions/upload-artifact@v3
       with:
-        name: dotnet-results-${{ dotnet-version }}
-        path: TestResults-${{ dotnet-version }}
+        name: dotnet-results
+        path: TestResults
       if: ${{ always() }} # publish even when it failed
