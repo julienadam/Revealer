@@ -4,6 +4,10 @@
     border-radius: 3px;
 }
 
+.reveal .code-wrapper {
+    font-size: 12pt;
+}
+
 .reveal {
     /* override font size globally, slightly smaller than most themes */
     font-size: 36px;
@@ -16,5 +20,5 @@
 
 .reveal .mermaid {
     /* force white background for mermaid diagrams */
-    background-color: white
+    background-color: white;
 }

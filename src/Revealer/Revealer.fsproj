@@ -43,4 +43,10 @@
         <PackageReference Include="YamlDotNet" Version="13.7.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Update="resources\dist\theme\night-logo.css">
+        <LogicalName>$([System.String]::new('%(RelativeDir)').Replace('\','/'))%(FileName)%(Extension)</LogicalName>
+      </EmbeddedResource>
+    </ItemGroup>
+
 </Project>
