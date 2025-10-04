@@ -13,6 +13,7 @@ let ensureBrowser () = task {
 let getPrintingOptions header footer = 
     let inline styleHeaderAndFooter text = sprintf "<span style=\"font-size: 12px; padding-left: 5px \">%s</span>" text
     let options = new PdfOptions()
+    options.Tagged <- true
     options.Landscape <- true
     let marginOptions = new Media.MarginOptions()
     marginOptions.Bottom <- "1cm"
